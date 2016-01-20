@@ -7,6 +7,7 @@
 ###
 
 fs     = require 'fs'
+sds    = require 'sds'
 colors = require 'colors'
 noon   = require 'noon'
 _      = require 'lodash'
@@ -63,9 +64,45 @@ colorcat
     dim                                          . = false
         ?          |#{'    ▲▲ dim'.dim.white} 
 #{bgrdColors}
+    pattern     . ? colorize with patterns in file
     
 version   #{require("#{__dirname}/../package.json").version}
 """
+
+###
+00000000    0000000   000000000  000000000  00000000  00000000   000   000
+000   000  000   000     000        000     000       000   000  0000  000
+00000000   000000000     000        000     0000000   0000000    000 0 000
+000        000   000     000        000     000       000   000  000  0000
+000        000   000     000        000     00000000  000   000  000   000
+###
+
+colorize = (names, s) ->
+    for n in names.split '.'
+        s = colors[n] s
+    s
+
+regexes  = []
+if args.pattern?
+    patterns = sds.load args.pattern
+    if _.isObject patterns
+        for r,c of patterns
+            regexes.push
+                reg: new RegExp r
+                fun: c.map (i) -> (s) -> colorize i, s
+    else
+        args.pattern = null
+        
+pattern = (chunk) ->
+    # log chunk.red
+    s = ''
+    for r in regexes
+        match = r.reg.exec chunk
+        if match.length > 1
+            for i in [0..match.length-2]
+                s += r.fun[i] match[i+1]
+            return s
+    chunk
 
 ###
 00000000  000   000  000   000  000   000  000   000
@@ -94,10 +131,29 @@ if args.dim
     dimText = (s) -> fatText(s).dim
 else
     dimText = fatText
-        
+
+###
+ 0000000  000000000  00000000   00000000   0000000   00     00
+000          000     000   000  000       000   000  000   000
+0000000      000     0000000    0000000   000000000  000000000
+     000     000     000   000  000       000   000  000 0 000
+0000000      000     000   000  00000000  000   000  000   000
+###
+
 colorStream = (stream) ->
     stream.on 'data', (chunk) ->
-        log chunk.split('\n').map((l) -> funkyBgrd dimText l).join(colors.reset('\n'))
+        if args.pattern
+            log pattern chunk
+        else
+            log chunk.split('\n').map((l) -> funkyBgrd dimText l).join(colors.reset('\n'))
+
+###
+ 0000000   0000000   000000000      000  00000000  000  000      00000000
+000       000   000     000        000   000       000  000      000     
+000       000000000     000       000    000000    000  000      0000000 
+000       000   000     000      000     000       000  000      000     
+ 0000000  000   000     000     000      000       000  0000000  00000000
+###
 
 if args.file
     stream = fs.createReadStream args.file, encoding: 'utf8'
