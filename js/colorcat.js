@@ -75,7 +75,7 @@
     bgrdColors += "    " + c + "  . = false . - " + bgrd[c] + " . ? " + (colors.reset(colors[bg](ci))) + "\n";
   }
 
-  args = require('karg')("\ncolorcat\n\n    file        . ? the file to display or stdin . *\n" + textColors + "\n    fat         . ? " + '▲▲     fat'.bold.white + "   . = false\n    dim                                          . = false\n        ?          |" + '    ▲▲ dim'.dim.white + " \n" + bgrdColors + "\n    pattern     . ? colorize with patterns in file\n    \nversion   " + (require(__dirname + "/../package.json").version));
+  args = require('karg')("\ncolorcat\n\n    file         . ? the file to display or stdin . *\n" + textColors + "\n    fat          . ? " + '▲▲     fat'.bold.white + "   . = false\n    dim                                           . = false\n        ?           |" + '    ▲▲ dim'.dim.white + " \n" + bgrdColors + "\n    pattern      . ? colorize with pattern\n    patternFile  . ? colorize with patterns in file . - P\n    \nversion   " + (require(__dirname + "/../package.json").version));
 
 
   /*
@@ -99,21 +99,27 @@
   regexes = [];
 
   if (args.pattern != null) {
-    patterns = sds.load(args.pattern);
-    if (_.isObject(patterns)) {
-      for (r in patterns) {
-        c = patterns[r];
-        regexes.push({
-          reg: new RegExp(r),
-          fun: c.map(function(i) {
-            return function(s) {
-              return colorize(i, s);
-            };
-          })
-        });
-      }
-    } else {
-      args.pattern = null;
+    patterns = noon.parse(args.pattern);
+  }
+
+  if (args.patternFile != null) {
+    patterns = sds.load(args.patternFile);
+  }
+
+  if (patterns != null) {
+    if (!args.pattern) {
+      args.pattern = true;
+    }
+    for (r in patterns) {
+      c = patterns[r];
+      regexes.push({
+        reg: new RegExp(r),
+        fun: c.map(function(i) {
+          return function(s) {
+            return colorize(i, s);
+          };
+        })
+      });
     }
   }
 

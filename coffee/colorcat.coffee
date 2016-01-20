@@ -58,13 +58,14 @@ args = require('karg') """
 
 colorcat
 
-    file        . ? the file to display or stdin . *
+    file         . ? the file to display or stdin . *
 #{textColors}
-    fat         . ? #{'▲▲     fat'.bold.white}   . = false
-    dim                                          . = false
-        ?          |#{'    ▲▲ dim'.dim.white} 
+    fat          . ? #{'▲▲     fat'.bold.white}   . = false
+    dim                                           . = false
+        ?           |#{'    ▲▲ dim'.dim.white} 
 #{bgrdColors}
-    pattern     . ? colorize with patterns in file
+    pattern      . ? colorize with pattern
+    patternFile  . ? colorize with patterns in file . - P
     
 version   #{require("#{__dirname}/../package.json").version}
 """
@@ -82,16 +83,17 @@ colorize = (names, s) ->
         s = colors[n] s
     s
 
-regexes  = []
-if args.pattern?
-    patterns = sds.load args.pattern
-    if _.isObject patterns
-        for r,c of patterns
-            regexes.push
-                reg: new RegExp r
-                fun: c.map (i) -> (s) -> colorize i, s
-    else
-        args.pattern = null
+regexes = []
+
+patterns = noon.parse args.pattern if args.pattern?
+patterns = sds.load args.patternFile if args.patternFile?
+
+if patterns?
+    args.pattern = true if not args.pattern
+    for r,c of patterns
+        regexes.push
+            reg: new RegExp r
+            fun: c.map (i) -> (s) -> colorize i, s
         
 pattern = (chunk) ->
     # log chunk.red
