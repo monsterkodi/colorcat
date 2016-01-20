@@ -129,7 +129,7 @@
     for (m = 0, len2 = regexes.length; m < len2; m++) {
       r = regexes[m];
       match = r.reg.exec(chunk);
-      if (match.length > 1) {
+      if ((match != null) && match.length > 1) {
         for (i = o = 0, ref2 = match.length - 2; 0 <= ref2 ? o <= ref2 : o >= ref2; i = 0 <= ref2 ? ++o : --o) {
           s += r.fun[i](match[i + 1]);
         }

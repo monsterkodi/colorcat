@@ -99,7 +99,7 @@ pattern = (chunk) ->
     s = ''
     for r in regexes
         match = r.reg.exec chunk
-        if match.length > 1
+        if match? and match.length > 1
             for i in [0..match.length-2]
                 s += r.fun[i] match[i+1]
             return s
