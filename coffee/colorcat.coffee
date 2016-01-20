@@ -96,13 +96,19 @@ if patterns?
             fun: c.map (i) -> (s) -> colorize i, s
         
 pattern = (chunk) ->
-    s = ''
+    matches = []
     for r in regexes
         match = r.reg.exec chunk
         if match? and match.length > 1
+            match.fun = r.fun
+            matches.push match
+    if matches
+        matches.sort (a,b) -> a.index < b.index
+        for match in matches
+            s = ''
             for i in [0..match.length-2]
-                s += r.fun[i] match[i+1]
-            return s
+                s += match.fun[i] match[i+1]
+            chunk = (chunk.slice 0, match.index) + s + chunk.slice match.index + match[0].length
     chunk
 
 ###

@@ -124,16 +124,27 @@
   }
 
   pattern = function(chunk) {
-    var i, len2, m, match, o, ref2, s;
-    s = '';
+    var i, len2, len3, m, match, matches, o, p, ref2, s;
+    matches = [];
     for (m = 0, len2 = regexes.length; m < len2; m++) {
       r = regexes[m];
       match = r.reg.exec(chunk);
       if ((match != null) && match.length > 1) {
-        for (i = o = 0, ref2 = match.length - 2; 0 <= ref2 ? o <= ref2 : o >= ref2; i = 0 <= ref2 ? ++o : --o) {
-          s += r.fun[i](match[i + 1]);
+        match.fun = r.fun;
+        matches.push(match);
+      }
+    }
+    if (matches) {
+      matches.sort(function(a, b) {
+        return a.index < b.index;
+      });
+      for (o = 0, len3 = matches.length; o < len3; o++) {
+        match = matches[o];
+        s = '';
+        for (i = p = 0, ref2 = match.length - 2; 0 <= ref2 ? p <= ref2 : p >= ref2; i = 0 <= ref2 ? ++p : --p) {
+          s += match.fun[i](match[i + 1]);
         }
-        return s;
+        chunk = (chunk.slice(0, match.index)) + s + chunk.slice(match.index + match[0].length);
       }
     }
     return chunk;

@@ -1,0 +1,4 @@
+[master 11fcb7c] colorcommit
+ 5 files changed, 7 insertions(+), 4 deletions(-)
+ create mode 100644 colorcat/.konrad.noon
+ create mode 100644 colorcat/commit.noon
