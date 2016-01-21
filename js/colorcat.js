@@ -125,6 +125,7 @@
 
   pattern = function(chunk) {
     var i, len2, len3, m, match, matches, o, p, ref2, s;
+    log(chunk.green.dim);
     matches = [];
     for (m = 0, len2 = regexes.length; m < len2; m++) {
       r = regexes[m];
@@ -210,13 +211,18 @@
 
   colorStream = function(stream) {
     return stream.on('data', function(chunk) {
+      var colorLines, lines;
+      lines = chunk.split('\n');
       if (args.pattern) {
-        return log(pattern(chunk));
+        colorLines = lines.map(function(l) {
+          return pattern(l);
+        });
       } else {
-        return log(chunk.split('\n').map(function(l) {
+        colorLines = lines.map(function(l) {
           return funkyBgrd(dimText(l));
-        }).join(colors.reset('\n')));
+        });
       }
+      return log(colorLines.join(colors.reset('\n')));
     });
   };
 

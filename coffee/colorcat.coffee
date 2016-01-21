@@ -96,6 +96,7 @@ if patterns?
             fun: c.map (i) -> (s) -> colorize i, s
         
 pattern = (chunk) ->
+    log chunk.green.dim
     matches = []
     for r in regexes
         match = r.reg.exec chunk
@@ -149,10 +150,12 @@ else
 
 colorStream = (stream) ->
     stream.on 'data', (chunk) ->
+        lines = chunk.split '\n'
         if args.pattern
-            log pattern chunk
+            colorLines = lines.map (l) -> pattern l
         else
-            log chunk.split('\n').map((l) -> funkyBgrd dimText l).join(colors.reset('\n'))
+            colorLines = lines.map (l) -> funkyBgrd dimText l
+        log colorLines.join colors.reset '\n'
 
 ###
  0000000   0000000   000000000      000  00000000  000  000      00000000
