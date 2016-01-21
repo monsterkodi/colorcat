@@ -1,7 +1,7 @@
 {
   "name": "colorcat",
-  "version": "0.0.9",
-  "description": "color's cat",
+  "version": "0.1.1",
+  "description": "loves colors",
   "main": "js/colorcat.js",
   "repository": {
     "type": "git",
