@@ -1,6 +1,6 @@
 {
   "name": "colorcat",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "color's cat",
   "main": "js/colorcat.js",
   "repository": {
