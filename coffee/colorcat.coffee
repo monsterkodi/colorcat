@@ -96,7 +96,6 @@ if patterns?
             fun: c.map (i) -> (s) -> colorize i, s
         
 pattern = (chunk) ->
-    log chunk.green.dim
     matches = []
     for r in regexes
         match = r.reg.exec chunk

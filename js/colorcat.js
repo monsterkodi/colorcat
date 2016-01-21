@@ -125,7 +125,6 @@
 
   pattern = function(chunk) {
     var i, len2, len3, m, match, matches, o, p, ref2, s;
-    log(chunk.green.dim);
     matches = [];
     for (m = 0, len2 = regexes.length; m < len2; m++) {
       r = regexes[m];
