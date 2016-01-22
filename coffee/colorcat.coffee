@@ -98,7 +98,6 @@ expand = (e) ->
                 c.split('').map((a) -> invert[a]).join '.'
             else
                 c
-    log e
     e 
 
 patterns = expand noon.parse args.pattern if args.pattern?
