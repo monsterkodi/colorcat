@@ -1,2 +1,3 @@
 *.log
 Icon?
+node_modules
