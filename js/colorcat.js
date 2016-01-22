@@ -8,7 +8,8 @@
  */
 
 (function() {
-  var _, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, noon, o, pattern, patterns, r, ref, ref1, ref2, ref3, regexes, sds, stream, text, textColors;
+  var _, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, noon, o, pattern, patterns, r, ref, ref1, ref2, ref3, regexes, sds, stream, text, textColors,
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   fs = require('fs');
 
@@ -38,8 +39,8 @@
     yellow: 'y',
     magenta: 'm',
     cyan: 'c',
-    gray: 'z',
-    black: 'x',
+    gray: 'x',
+    black: 'z',
     white: 'w'
   };
 
@@ -52,14 +53,14 @@
   }
 
   bgrd = {
-    onBlack: 'Z',
-    onRed: 'R',
-    onGreen: 'G',
-    onBlue: 'B',
-    onYellow: 'Y',
-    onMagenta: 'M',
-    onCyan: 'C',
-    onWhite: 'W'
+    bgBlack: 'Z',
+    bgRed: 'R',
+    bgGreen: 'G',
+    bgBlue: 'B',
+    bgYellow: 'Y',
+    bgMagenta: 'M',
+    bgCyan: 'C',
+    bgWhite: 'W'
   };
 
   bgrdColors = '';
@@ -98,8 +99,32 @@
 
   regexes = [];
 
+  expand = function(p) {
+    var clrlst, cls, cnames, e, invert, pat;
+    e = noon.parse(p);
+    clrlst = _.assign(text, bgrd);
+    cnames = _.concat(_.keys(text), _.keys(bgrd));
+    invert = _.invert(clrlst);
+    invert.f = 'bold';
+    invert.d = 'dim';
+    for (pat in e) {
+      cls = e[pat];
+      e[pat] = cls.map(function(clr) {
+        c = clr.split('.')[0];
+        if (indexOf.call(cnames, c) < 0) {
+          return c.split('').map(function(a) {
+            return invert[a];
+          }).join('.');
+        } else {
+          return c;
+        }
+      });
+    }
+    return e;
+  };
+
   if (args.pattern != null) {
-    patterns = noon.parse(args.pattern);
+    patterns = expand(args.pattern);
   }
 
   if (args.patternFile != null) {
@@ -124,7 +149,7 @@
   }
 
   pattern = function(chunk) {
-    var i, len2, len3, m, match, matches, o, p, ref2, s;
+    var i, len2, len3, m, match, matches, o, q, ref2, s;
     matches = [];
     for (m = 0, len2 = regexes.length; m < len2; m++) {
       r = regexes[m];
@@ -141,7 +166,7 @@
       for (o = 0, len3 = matches.length; o < len3; o++) {
         match = matches[o];
         s = '';
-        for (i = p = 0, ref2 = match.length - 2; 0 <= ref2 ? p <= ref2 : p >= ref2; i = 0 <= ref2 ? ++p : --p) {
+        for (i = q = 0, ref2 = match.length - 2; 0 <= ref2 ? q <= ref2 : q >= ref2; i = 0 <= ref2 ? ++q : --q) {
           s += match.fun[i](match[i + 1]);
         }
         chunk = (chunk.slice(0, match.index)) + s + chunk.slice(match.index + match[0].length);

@@ -29,8 +29,8 @@ text =
     yellow:  'y'
     magenta: 'm'
     cyan:    'c'
-    gray:    'z'
-    black:   'x'
+    gray:    'x'
+    black:   'z'
     white:   'w'
         
 textColors = ''
@@ -38,14 +38,14 @@ for c in _.keys text
     textColors += "    #{c}  . = false . - #{text[c]} . ? #{colors[c]('██'.bold)}#{colors[c]('██')}#{colors[c].dim('██')} #{colors[c](c) }\n"
 
 bgrd = 
-    onBlack:   'Z'
-    onRed:     'R' 
-    onGreen:   'G'
-    onBlue:    'B'
-    onYellow:  'Y'
-    onMagenta: 'M'
-    onCyan:    'C'
-    onWhite:   'W'
+    bgBlack:   'Z'
+    bgRed:     'R' 
+    bgGreen:   'G'
+    bgBlue:    'B'
+    bgYellow:  'Y'
+    bgMagenta: 'M'
+    bgCyan:    'C'
+    bgWhite:   'W'
     
 bgrdColors = ''
 for c in _.keys bgrd
@@ -85,7 +85,24 @@ colorize = (names, s) ->
 
 regexes = []
 
-patterns = noon.parse args.pattern if args.pattern?
+expand = (p) ->
+    e = noon.parse p
+    clrlst = _.assign text, bgrd
+    cnames = _.concat _.keys(text), _.keys(bgrd)
+    invert = _.invert clrlst
+    invert.f = 'bold'
+    invert.d = 'dim' 
+    for pat,cls of e
+        e[pat] = cls.map (clr) ->
+            c = clr.split('.')[0]
+            if c not in cnames
+                c.split('').map((a) -> invert[a]).join '.'
+            else
+                c
+    # log e
+    e 
+
+patterns = expand args.pattern if args.pattern?
 patterns = sds.load args.patternFile if args.patternFile?
 
 if patterns?
