@@ -85,8 +85,7 @@ colorize = (names, s) ->
 
 regexes = []
 
-expand = (p) ->
-    e = noon.parse p
+expand = (e) ->
     clrlst = _.assign text, bgrd
     cnames = _.concat _.keys(text), _.keys(bgrd)
     invert = _.invert clrlst
@@ -99,11 +98,11 @@ expand = (p) ->
                 c.split('').map((a) -> invert[a]).join '.'
             else
                 c
-    # log e
+    log e
     e 
 
-patterns = expand args.pattern if args.pattern?
-patterns = sds.load args.patternFile if args.patternFile?
+patterns = expand noon.parse args.pattern if args.pattern?
+patterns = expand sds.load args.patternFile if args.patternFile?
 
 if patterns?
     args.pattern = true if not args.pattern

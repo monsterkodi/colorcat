@@ -99,9 +99,8 @@
 
   regexes = [];
 
-  expand = function(p) {
-    var clrlst, cls, cnames, e, invert, pat;
-    e = noon.parse(p);
+  expand = function(e) {
+    var clrlst, cls, cnames, invert, pat;
     clrlst = _.assign(text, bgrd);
     cnames = _.concat(_.keys(text), _.keys(bgrd));
     invert = _.invert(clrlst);
@@ -120,15 +119,16 @@
         }
       });
     }
+    log(e);
     return e;
   };
 
   if (args.pattern != null) {
-    patterns = expand(args.pattern);
+    patterns = expand(noon.parse(args.pattern));
   }
 
   if (args.patternFile != null) {
-    patterns = sds.load(args.patternFile);
+    patterns = expand(sds.load(args.patternFile));
   }
 
   if (patterns != null) {
@@ -149,7 +149,7 @@
   }
 
   pattern = function(chunk) {
-    var i, len2, len3, m, match, matches, o, q, ref2, s;
+    var i, len2, len3, m, match, matches, o, p, ref2, s;
     matches = [];
     for (m = 0, len2 = regexes.length; m < len2; m++) {
       r = regexes[m];
@@ -166,7 +166,7 @@
       for (o = 0, len3 = matches.length; o < len3; o++) {
         match = matches[o];
         s = '';
-        for (i = q = 0, ref2 = match.length - 2; 0 <= ref2 ? q <= ref2 : q >= ref2; i = 0 <= ref2 ? ++q : --q) {
+        for (i = p = 0, ref2 = match.length - 2; 0 <= ref2 ? p <= ref2 : p >= ref2; i = 0 <= ref2 ? ++p : --p) {
           s += match.fun[i](match[i + 1]);
         }
         chunk = (chunk.slice(0, match.index)) + s + chunk.slice(match.index + match[0].length);
