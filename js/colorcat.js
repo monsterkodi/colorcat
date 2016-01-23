@@ -49,7 +49,7 @@
   ref = _.keys(text);
   for (j = 0, len = ref.length; j < len; j++) {
     c = ref[j];
-    textColors += "    " + c + "  . = false . - " + text[c] + " . ? " + (colors[c]('██'.bold)) + (colors[c]('██')) + (colors[c].dim('██')) + " " + (colors[c](c)) + "\n";
+    textColors += "    " + c + "  . = false . - " + text[c] + " . ? " + (colors[c].bold('██')) + (colors[c]('██')) + (colors[c].dim('██')) + " " + (colors[c](c)) + "\n";
   }
 
   bgrd = {
@@ -69,9 +69,9 @@
   for (k = 0, len1 = ref1.length; k < len1; k++) {
     c = ref1[k];
     bg = 'bg' + c.substr(2);
-    ci = ("    " + _.padEnd(c, 11)).black;
-    if (c === 'onBlack' || c === 'onBlue') {
-      ci = ("    " + _.padEnd(c, 11)).white;
+    ci = colors.black("    " + _.padEnd(c, 11));
+    if (c === 'bgBlack' || c === 'bgBlue') {
+      ci = colors.white("    " + _.padEnd(c, 11));
     }
     bgrdColors += "    " + c + "  . = false . - " + bgrd[c] + " . ? " + (colors.reset(colors[bg](ci))) + "\n";
   }
@@ -245,7 +245,7 @@
           return funkyBgrd(dimText(l));
         });
       }
-      return log(colorLines.join(colors.reset('\n')));
+      return process.stdout.write(colorLines.join('\n'));
     });
   };
 

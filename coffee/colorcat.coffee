@@ -35,7 +35,7 @@ text =
         
 textColors = ''
 for c in _.keys text
-    textColors += "    #{c}  . = false . - #{text[c]} . ? #{colors[c]('██'.bold)}#{colors[c]('██')}#{colors[c].dim('██')} #{colors[c](c) }\n"
+    textColors += "    #{c}  . = false . - #{text[c]} . ? #{colors[c].bold '██'}#{colors[c] '██'}#{colors[c].dim '██'} #{colors[c](c) }\n"
 
 bgrd = 
     bgBlack:   'Z'
@@ -50,8 +50,8 @@ bgrd =
 bgrdColors = ''
 for c in _.keys bgrd
     bg = 'bg'+c.substr(2)
-    ci = ("    "+_.padEnd(c,11)).black
-    ci = ("    "+_.padEnd(c,11)).white if c in ['onBlack', 'onBlue']
+    ci = colors.black "    "+_.padEnd c,11
+    ci = colors.white "    "+_.padEnd c,11 if c in ['bgBlack', 'bgBlue']
     bgrdColors += "    #{c}  . = false . - #{bgrd[c]} . ? #{colors.reset(colors[bg](ci))}\n"
         
 args = require('karg') """
@@ -169,7 +169,7 @@ colorStream = (stream) ->
             colorLines = lines.map (l) -> pattern l
         else
             colorLines = lines.map (l) -> funkyBgrd dimText l
-        log colorLines.join colors.reset '\n'
+        process.stdout.write colorLines.join '\n'
 
 ###
  0000000   0000000   000000000      000  00000000  000  000      00000000
