@@ -7,7 +7,7 @@ The examples were generated with [this shell script](./test/test.sh).
 
 ### syntax highlighting
 
-Contains syntax highligting patterns for
+Contains syntax highlighting patterns for
 
 - [coffee](./test/coffee.noon) 
 - [noon](./test/noon.noon) 
