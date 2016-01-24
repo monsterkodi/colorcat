@@ -1,7 +1,7 @@
 ^\S+$                xf
 (^\S+\s\s)(.*)     . xf . f
 (^\s+\S+\s\s)(.*)  . x . f
-https?://\S*         y
+(https?)(://\S*)   . yd . y
 \.?\/?\S+\/\S+       g
 null|true|false      m
 ["\.:,{}><^=/]       d    
