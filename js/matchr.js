@@ -18,9 +18,7 @@
   000       000   000  0000  000  000       000  000      
   000       000   000  000 0 000  000000    000  000  0000
   000       000   000  000  0000  000       000  000   000
-   0000000   0000000   000   000  000       000   0000000 
-  
-  convert the patterns object to a list of [RegExp(key), value] pairs
+   0000000   0000000   000   000  000       000   0000000
    */
 
   config = function(patterns) {
@@ -39,27 +37,12 @@
   000   000  000   000  0000  000  000        000       000     
   0000000    000000000  000 0 000  000  0000  0000000   0000000 
   000   000  000   000  000  0000  000   000  000            000
-  000   000  000   000  000   000   0000000   00000000  0000000 
-  
-  accepts a list of [regexp, value(s)] pairs and a string
-  returns a list of objects with information about the matches:
-  
-      match: the matched substring
-      start: position of match in str
-      value: the value for the match
-      index: the index of the regexp 
-      
-      the objects are sorted by start, match.length and index
-      
-      if the regexp has capture groups then 
-          the value for the match of the nth group is
-              the nth item of values(s) if value(s) is an array
-              the nth [key, value] pair if value(s) is an object
+  000   000  000   000  000   000   0000000   00000000  0000000
    */
 
   ranges = function(regexes, str) {
-    var arg, i, j, k, l, match, r, ref, ref1, reg, s, value;
-    ranges = [];
+    var arg, gs, i, j, k, l, match, r, ref, ref1, reg, rgs, s, value;
+    rgs = [];
     for (r = k = 0, ref = regexes.length; 0 <= ref ? k < ref : k > ref; r = 0 <= ref ? ++k : --k) {
       reg = regexes[r][0];
       arg = regexes[r][1];
@@ -71,7 +54,7 @@
           break;
         }
         if (match.length === 1) {
-          ranges.push({
+          rgs.push({
             start: match.index + i,
             match: match[0],
             value: arg,
@@ -80,6 +63,7 @@
           i += match.index + match[0].length;
           s = str.slice(i);
         } else {
+          gs = 0;
           for (j = l = 0, ref1 = match.length - 2; 0 <= ref1 ? l <= ref1 : l >= ref1; j = 0 <= ref1 ? ++l : --l) {
             value = arg;
             if (_.isArray(value) && j < value.length) {
@@ -87,8 +71,9 @@
             } else if (_.isObject(value) && j < _.size(value)) {
               value = [_.keys(value)[j], value[_.keys(value)[j]]];
             }
-            ranges.push({
-              start: match.index + i + match[0].indexOf(match[j + 1]),
+            gs += match[0].slice(gs).indexOf(match[j + 1]);
+            rgs.push({
+              start: match.index + i + gs,
               match: match[j + 1],
               value: value,
               index: r
@@ -99,7 +84,7 @@
         }
       }
     }
-    return ranges.sort(function(a, b) {
+    return rgs.sort(function(a, b) {
       if (a.start === b.start) {
         if (a.match.length === b.match.length) {
           return a.index - b.index;
@@ -118,16 +103,7 @@
   000   000  000  000       000       000       000          000   
   000   000  000  0000000   0000000   0000000   000          000   
   000   000  000       000       000  000       000          000   
-  0000000    000  0000000   0000000   00000000   0000000     000   
-  
-  accepts a list of ranges
-  returns a new list of objects
-  
-      match: the matched substring
-      start: position of match in str
-      stack: list of values
-      
-      with none of the [start, start+match.length] ranges overlapping
+  0000000    000  0000000   0000000   00000000   0000000     000
    */
 
   dissect = function(ranges) {

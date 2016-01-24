@@ -17,7 +17,7 @@
   "license": "Unlicense",
   "dependencies": {
     "colors": "^1.1.2",
-    "karg": "^0.1.32",
+    "karg": ">=0.1.32",
     "lodash": "^4.0.0",
     "noon": "^0.8.2"
   }

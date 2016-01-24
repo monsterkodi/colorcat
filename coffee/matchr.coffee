@@ -14,9 +14,9 @@ _ = require 'lodash'
 000       000   000  000 0 000  000000    000  000  0000
 000       000   000  000  0000  000       000  000   000
  0000000   0000000   000   000  000       000   0000000 
-
-convert the patterns object to a list of [RegExp(key), value] pairs
 ###
+#
+# convert the patterns object to a list of [RegExp(key), value] pairs
 
 config = (patterns) -> ( [new RegExp(p), a] for p,a of patterns )
 
@@ -26,26 +26,26 @@ config = (patterns) -> ( [new RegExp(p), a] for p,a of patterns )
 0000000    000000000  000 0 000  000  0000  0000000   0000000 
 000   000  000   000  000  0000  000   000  000            000
 000   000  000   000  000   000   0000000   00000000  0000000 
-
-accepts a list of [regexp, value(s)] pairs and a string
-returns a list of objects with information about the matches:
-
-    match: the matched substring
-    start: position of match in str
-    value: the value for the match
-    index: the index of the regexp 
-    
-    the objects are sorted by start, match.length and index
-    
-    if the regexp has capture groups then 
-        the value for the match of the nth group is
-            the nth item of values(s) if value(s) is an array
-            the nth [key, value] pair if value(s) is an object
 ###
+#
+# accepts a list of [regexp, value(s)] pairs and a string
+# returns a list of objects with information about the matches:
+# 
+#     match: the matched substring
+#     start: position of match in str
+#     value: the value for the match
+#     index: the index of the regexp 
+#     
+#     the objects are sorted by start, match.length and index
+#     
+#     if the regexp has capture groups then 
+#         the value for the match of the nth group is
+#             the nth item of values(s) if value(s) is an array
+#             the nth [key, value] pair if value(s) is an object
 
 ranges = (regexes, str) ->
     
-    ranges = []
+    rgs = []
     for r in [0...regexes.length]
         reg = regexes[r][0]
         arg = regexes[r][1]
@@ -55,7 +55,7 @@ ranges = (regexes, str) ->
             match = reg.exec s
             break if not match?
             if match.length == 1
-                ranges.push
+                rgs.push
                     start: match.index + i
                     match: match[0]
                     value: arg
@@ -63,20 +63,22 @@ ranges = (regexes, str) ->
                 i += match.index + match[0].length
                 s = str.slice i
             else
+                gs = 0
                 for j in [0..match.length-2]
                     value = arg
                     if _.isArray(value) and j < value.length then value = value[j]
                     else if _.isObject(value) and j < _.size(value) 
                         value = [_.keys(value)[j], value[_.keys(value)[j]]]
-                    ranges.push
-                        start: match.index + i + match[0].indexOf match[j+1]
+                    gs += match[0].slice(gs).indexOf match[j+1]
+                    rgs.push
+                        start: match.index + i + gs
                         match: match[j+1]
                         value: value
                         index: r
                 i += match.index + match[0].length
                 s = str.slice i
                 
-    ranges.sort (a,b) -> 
+    rgs.sort (a,b) -> 
         if a.start == b.start
             if a.match.length == b.match.length
                 a.index - b.index
@@ -91,16 +93,16 @@ ranges = (regexes, str) ->
 000   000  000  0000000   0000000   0000000   000          000   
 000   000  000       000       000  000       000          000   
 0000000    000  0000000   0000000   00000000   0000000     000   
-
-accepts a list of ranges
-returns a new list of objects
-
-    match: the matched substring
-    start: position of match in str
-    stack: list of values
-    
-    with none of the [start, start+match.length] ranges overlapping
 ###
+# 
+# accepts a list of ranges
+# returns a new list of objects
+# 
+#     match: the matched substring
+#     start: position of match in str
+#     stack: list of values
+#     
+#     with none of the [start, start+match.length] ranges overlapping
 
 dissect = (ranges) -> 
     return [] if not ranges.length

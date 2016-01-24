@@ -124,6 +124,7 @@ pattern = (chunk) ->
     
     rngs = matchr.ranges matchrConfig, chunk
     diss = matchr.dissect rngs
+    
     if diss.length
         for di in [diss.length-1..0]
             d = diss[di]
