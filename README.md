@@ -13,6 +13,6 @@ Contains syntax highligting patterns for
 - [noon](./test/noon.noon) 
 - [json](./test/json.noon) 
 
-A side by side comparison of atom and colorcat highlighting:
+A side by side comparison of my atom and colorcat highlighting:
 
 ![atomcat](img/atomcat.png)
