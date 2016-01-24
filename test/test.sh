@@ -19,4 +19,4 @@ echo
 npm ls --depth 2 | colorcat -p "([\s┬─├└│]+)(\S+)(@)([\d\.]+) . xd . g . z . m :: (\S+)(@)([\d\.]+)\s(.*) . yf . z . mf . z"
 echo "syntax highlighting:" | colorcat -fw
 echo
-cat package.noon | colorcat -P test/noon.noon 
+cat package.noon | colorcat -P syntax/noon.noon 
