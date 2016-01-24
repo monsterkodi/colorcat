@@ -49,8 +49,8 @@ accepts a list of [regexp, value(s)] pairs and a string
 returns a list of objects with information about the matches:
 
     match: the matched substring
-    value: the value for the match
     start: position of match in str
+    value: the value for the match
     index: the index of the regexp 
     
     the objects are sorted by start, match.length and index
@@ -109,13 +109,52 @@ ranges = (regexes, str) ->
 000   000  000  0000000   0000000   0000000   000          000   
 000   000  000       000       000  000       000          000   
 0000000    000  0000000   0000000   00000000   0000000     000   
+
+accepts a list of ranges
+returns a new list of objects
+
+    match: the matched substring
+    start: position of match in str
+    stack: list of values
+    
+    with none of the [start, start+match.length] ranges overlapping
 ###
 
 dissect = (ranges) -> 
+    # log ranges
+    di = []
+    for ri in [0...ranges.length]
+        rg = ranges[ri]
+        di.push [rg.start, ri]
+        di.push [rg.start + rg.match.length]
+    di.sort (a,b) -> 
+        if a[0]==b[0] 
+            a[1]-b[1]
+        else
+            a[0]-b[0]
+    d = []
+    si = -1
+    for i in [0...di.length-1]
+        if di[i][0] > si
+            si = di[i][0]
+            d.push
+                start: si
+                stack: []
     p = 0
-    for range in ranges
-        log range
-        
+    for ri in [0...ranges.length]
+        rg = ranges[ri]
+        while d[p].start < rg.start 
+            p += 1 
+        pn = p
+        while d[pn].start < rg.start+rg.match.length
+            d[pn].stack.push rg.value
+            if not d[pn].match
+                d[pn].match = rg.match.substr d[pn].start-rg.start, d[pn+1].start-d[pn].start
+            pn += 1        
+            
+    # log noon.stringify d, colors:true
+    log d
+            
     
 flatten = (ranges) ->
     for r in ranges
@@ -126,7 +165,7 @@ rngs = ranges regs, "  _abc1234twowords-2342onewordxxx1yy2zzzz3x4y5z6"
 #                    0123456789 123456789 123456789 123456789 1234567
 #                             10        20        30        40
 
-log noon.stringify rngs, colors:true 
+# log noon.stringify rngs, colors:true 
 
 dissect rngs
 
