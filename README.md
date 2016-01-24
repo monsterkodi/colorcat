@@ -13,6 +13,6 @@ Contains syntax highlighting patterns for
 - [noon](./syntax/noon.noon) 
 - [json](./syntax/json.noon) 
 
-A side by side comparison of my atom and colorcat highlighting:
+A side by side comparison of my atom and colorcat highlighting for coffeescript:
 
 ![atomcat](img/atomcat.png)
