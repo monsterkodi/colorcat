@@ -8,12 +8,14 @@
  */
 
 (function() {
-  var _, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, config, dimText, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, pattern, patterns, ref, ref1, ref2, ref3, regexes, sds, stream, text, textColors,
+  var _, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, config, dimText, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, path, pattern, patterns, ref, ref1, ref2, ref3, regexes, sds, stream, syntaxFile, text, textColors,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   fs = require('fs');
 
   sds = require('sds');
+
+  path = require('path');
 
   colors = require('colors');
 
@@ -129,6 +131,13 @@
     }
     return e;
   };
+
+  if (args.file != null) {
+    syntaxFile = path.join(__dirname, '..', 'syntax', path.extname(args.file).substr(1) + '.noon');
+    if (fs.existsSync(syntaxFile)) {
+      patterns = expand(sds.load(syntaxFile));
+    }
+  }
 
   if (args.pattern != null) {
     patterns = expand(noon.parse(args.pattern));

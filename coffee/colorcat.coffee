@@ -8,6 +8,7 @@
 
 fs     = require 'fs'
 sds    = require 'sds'
+path   = require 'path'
 colors = require 'colors'
 noon   = require 'noon'
 matchr = require './matchr'
@@ -105,6 +106,9 @@ expand = (e) ->
             e[pat] = expd cls
     e 
 
+if args.file?
+    syntaxFile = path.join __dirname, '..', 'syntax', path.extname(args.file).substr(1) + '.noon'
+    patterns = expand sds.load syntaxFile if fs.existsSync syntaxFile
 patterns = expand noon.parse args.pattern if args.pattern?
 patterns = expand sds.load args.patternFile if args.patternFile?
 
