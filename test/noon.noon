@@ -1,0 +1,10 @@
+^\S+$                xf
+(^\S+\s\s)(.*)     . xf . f
+(^\s+\S+\s\s)(.*)  . x . f
+https?://\S*         y
+\.?\/?\S+\/\S+       g
+null|true|false      m
+["\.:,{}><^=/]       d    
+\d+\.\d+\.\d+        r
+\d+\.?\d+?           m
+.*                   w

@@ -1,8 +1,7 @@
 {
   "name": "colorcat",
-  "version": "0.2.9",
   "description": "loves colors",
-  "main": "js/colorcat.js",
+  "version": "0.2.9",
   "repository": {
     "type": "git",
     "url": "https://github.com/monsterkodi/colorcat"
@@ -13,6 +12,7 @@
   "bin": {
     "colorcat": "./bin/colorcat"
   },
+  "preferGlobal": true,
   "author": "monsterkodi",
   "license": "Unlicense",
   "dependencies": {

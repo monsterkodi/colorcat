@@ -1,0 +1,5 @@
+("[^"]*")\s*:                 rf
+("[^"]*")                     w
+null|true|false|\d+\.\d+|\d+  mf
+[:,{}]                        xfd
+["]                           d

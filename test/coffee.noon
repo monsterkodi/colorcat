@@ -1,30 +1,30 @@
-(\w+)\s*(=)\s*(require)(\(?\s*')(\S+)('\s*\)?\s*)  . yf . xd . x . xd . rf . xd
-###                  xd
-(#)(.*)              . xd . x
+###                            xd
+(#)(.*)                      . xd . x
 (^|\s)(if|else|then|for|of|in|while|do|unless|not|or|and)(\s|$)  . w . mf . w
-class                yf
-console              x
-\#\{([^\}\#]*)\}           . yf
-(')([^']*)(')        . rfd . rf . rfd
-''|"""?              rfd
-(")([^"]*)(")        . yf  . rf . yf
-true                 g
-false                r
-null|undefined       m
+(\w+)\s*(=)\s*(require)(\(?\s*')(\S+)('\s*\)?\s*)  . yf . xd . x . xd . rf . xd
+class                          yf
+console                        x
+\#\{([^\}\#]*)\}             . yf
+(')([^']*)(')                . rfd . rf . rfd
+''|"""?                        rfd
+(")([^"]*)(")                . yf  . rf . yf
+true                           g
+false                          r
+null|undefined                 m
 (\w+)\s*=\s*\([^\)]*\)\s*->  . yf
 (\w+)\s*=\s*->               . yf
-(\()([^\(\)]*)(\)\s*)->  . bf . gf . bf
-->                   bf
-(\[).*(\.\.\.).*(\])   . mdf . mf . mdf
-\[(\d+)\]            . mf
-[0\s]+               x
-\d+                  m
-[1-9]                f
-(\S+)\s*(:)          . fy . rfd
-\S+(\?)              . mf
-[\(\)\{\}]           xf
-[\[\]\<\>\+\-\=]     x
-[\,\.]               wdf
-(_)\.(\w+)           . gf . gfd
-(\#\{|\})            . d
-\.(\w+)              . g
+(\()([^\(\)]*)(\)\s*)->      . bf . gf . bf
+->                             bf
+(\[).*(\.\.\.).*(\])         . mdf . mf . mdf
+\[(\d+)\]                    . mf
+[0\s]+                         x
+\d+                            m
+[1-9]                          f
+(\S+)\s*(:)                  . fy . rfd
+\S+(\?)                      . mf
+[\(\)\{\}]                     xf
+[\[\]\<\>\+\-\=]               x
+[\,\.]                         wdf
+(_)\.(\w+)                   . gf . gfd
+(\#\{|\})                    . d
+\.(\w+)                      . g
