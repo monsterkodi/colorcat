@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var _, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, noon, o, pattern, patterns, r, ref, ref1, ref2, ref3, regexes, sds, stream, text, textColors,
+  var _, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, config, dimText, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, pattern, patterns, ref, ref1, ref2, ref3, regexes, sds, stream, text, textColors,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   fs = require('fs');
@@ -18,6 +18,8 @@
   colors = require('colors');
 
   noon = require('noon');
+
+  matchr = require('./matchr');
 
   _ = require('lodash');
 
@@ -92,6 +94,7 @@
     ref2 = names.split('.');
     for (m = 0, len2 = ref2.length; m < len2; m++) {
       n = ref2[m];
+      log(n, s);
       s = colors[n](s);
     }
     return s;
@@ -100,24 +103,30 @@
   regexes = [];
 
   expand = function(e) {
-    var clrlst, cls, cnames, invert, pat;
+    var clrlst, cls, cnames, expd, invert, pat;
     clrlst = _.assign(text, bgrd);
     cnames = _.concat(_.keys(text), _.keys(bgrd));
     invert = _.invert(clrlst);
     invert.f = 'bold';
     invert.d = 'dim';
+    expd = function(c) {
+      if (indexOf.call(cnames, c) < 0) {
+        return c.split('').map(function(a) {
+          return invert[a];
+        }).join('.');
+      } else {
+        return c;
+      }
+    };
     for (pat in e) {
       cls = e[pat];
-      e[pat] = cls.map(function(clr) {
-        c = clr.split('.')[0];
-        if (indexOf.call(cnames, c) < 0) {
-          return c.split('').map(function(a) {
-            return invert[a];
-          }).join('.');
-        } else {
-          return c;
-        }
-      });
+      if (_.isArray(cls)) {
+        e[pat] = cls.map(function(clr) {
+          return expd(clr.split('.')[0]);
+        });
+      } else {
+        e[pat] = expd(cls);
+      }
     }
     return e;
   };
@@ -130,45 +139,45 @@
     patterns = expand(sds.load(args.patternFile));
   }
 
+  matchrConfig = null;
+
   if (patterns != null) {
     if (!args.pattern) {
       args.pattern = true;
     }
-    for (r in patterns) {
-      c = patterns[r];
-      regexes.push({
-        reg: new RegExp(r),
-        fun: c.map(function(i) {
+    config = _.mapValues(patterns, function(v) {
+      if (_.isArray(v)) {
+        return v.map(function(i) {
           return function(s) {
             return colorize(i, s);
           };
-        })
-      });
-    }
+        });
+      } else {
+        return function(s) {
+          return colorize(v, s);
+        };
+      }
+    });
+    matchrConfig = matchr.config(config);
   }
 
   pattern = function(chunk) {
-    var i, len2, len3, m, match, matches, o, p, ref2, s;
-    matches = [];
-    for (m = 0, len2 = regexes.length; m < len2; m++) {
-      r = regexes[m];
-      match = r.reg.exec(chunk);
-      if ((match != null) && match.length > 1) {
-        match.fun = r.fun;
-        matches.push(match);
-      }
-    }
-    if (matches) {
-      matches.sort(function(a, b) {
-        return a.index < b.index;
-      });
-      for (o = 0, len3 = matches.length; o < len3; o++) {
-        match = matches[o];
-        s = '';
-        for (i = p = 0, ref2 = match.length - 2; 0 <= ref2 ? p <= ref2 : p >= ref2; i = 0 <= ref2 ? ++p : --p) {
-          s += match.fun[i](match[i + 1]);
+    var clrzd, d, di, diss, len2, m, o, ref2, ref3, rngs, sv;
+    rngs = matchr.ranges(matchrConfig, chunk);
+    diss = matchr.dissect(rngs);
+    log(noon.stringify(diss, {
+      colors: true
+    }));
+    if (diss.length) {
+      for (di = m = ref2 = diss.length - 1; ref2 <= 0 ? m <= 0 : m >= 0; di = ref2 <= 0 ? ++m : --m) {
+        d = diss[di];
+        clrzd = d.match;
+        ref3 = d.stack;
+        for (o = 0, len2 = ref3.length; o < len2; o++) {
+          sv = ref3[o];
+          clrzd = sv(clrzd);
         }
-        chunk = (chunk.slice(0, match.index)) + s + chunk.slice(match.index + match[0].length);
+        chunk = chunk.slice(0, d.start) + clrzd + chunk.slice(d.start + d.match.length);
       }
     }
     return chunk;

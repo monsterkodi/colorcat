@@ -10,6 +10,7 @@ fs     = require 'fs'
 sds    = require 'sds'
 colors = require 'colors'
 noon   = require 'noon'
+matchr = require './matchr'
 _      = require 'lodash'
 
 log = console.log
@@ -80,6 +81,7 @@ version   #{require("#{__dirname}/../package.json").version}
 
 colorize = (names, s) ->
     for n in names.split '.'
+        log n, s
         s = colors[n] s
     s
 
@@ -90,40 +92,48 @@ expand = (e) ->
     cnames = _.concat _.keys(text), _.keys(bgrd)
     invert = _.invert clrlst
     invert.f = 'bold'
-    invert.d = 'dim' 
+    invert.d = 'dim'
+
+    expd = (c) ->
+        if c not in cnames
+            c.split('').map((a) -> invert[a]).join '.'
+        else
+            c
+    
     for pat,cls of e
-        e[pat] = cls.map (clr) ->
-            c = clr.split('.')[0]
-            if c not in cnames
-                c.split('').map((a) -> invert[a]).join '.'
-            else
-                c
+        if _.isArray cls
+            e[pat] = cls.map (clr) -> expd clr.split('.')[0]
+        else
+            e[pat] = expd cls
     e 
 
 patterns = expand noon.parse args.pattern if args.pattern?
 patterns = expand sds.load args.patternFile if args.patternFile?
 
+matchrConfig = null
+
 if patterns?
     args.pattern = true if not args.pattern
-    for r,c of patterns
-        regexes.push
-            reg: new RegExp r
-            fun: c.map (i) -> (s) -> colorize i, s
+    config = _.mapValues patterns, (v) -> 
+        if _.isArray v
+            v.map (i) -> (s) -> colorize i, s
+        else
+            (s) -> colorize v, s
+            
+    matchrConfig = matchr.config config
         
 pattern = (chunk) ->
-    matches = []
-    for r in regexes
-        match = r.reg.exec chunk
-        if match? and match.length > 1
-            match.fun = r.fun
-            matches.push match
-    if matches
-        matches.sort (a,b) -> a.index < b.index
-        for match in matches
-            s = ''
-            for i in [0..match.length-2]
-                s += match.fun[i] match[i+1]
-            chunk = (chunk.slice 0, match.index) + s + chunk.slice match.index + match[0].length
+    
+    rngs = matchr.ranges matchrConfig, chunk
+    diss = matchr.dissect rngs
+    log noon.stringify diss, colors:true
+    if diss.length
+        for di in [diss.length-1..0]
+            d = diss[di]
+            clrzd = d.match    
+            for sv in d.stack
+                clrzd = sv(clrzd)
+            chunk = chunk.slice(0, d.start) + clrzd + chunk.slice(d.start+d.match.length)
     chunk
 
 ###

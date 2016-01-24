@@ -6,25 +6,7 @@
 000   000  000   000     000      0000000  000   000  000   000
 ###
 
-noon = require 'noon'
-_    = require 'lodash'
-log  = console.log
-
-patterns = noon.parse """
-a       specific char
-word    specific word
-123     specific number
-
-\\w+    any word
-\\d+    any number
-
-(a)(b)          double char
-(two)(words)    . first . second
-(23)(42)        . 1st 0 . 2nd 1
-
-(x+)[^y]*(y+)[^z]*(z+)   . 1111 . 2222 . 3333
-(y+)[^z]*(z+)   .1111-2222-3333
-"""
+_ = require 'lodash'
 
 ###
  0000000   0000000   000   000  00000000  000   0000000 
@@ -121,7 +103,7 @@ returns a new list of objects
 ###
 
 dissect = (ranges) -> 
-    # log ranges
+    return [] if not ranges.length
     di = []
     for ri in [0...ranges.length]
         rg = ranges[ri]
@@ -147,30 +129,21 @@ dissect = (ranges) ->
             p += 1 
         pn = p
         while d[pn].start < rg.start+rg.match.length
-            d[pn].stack.push rg.value
-            if not d[pn].match
-                d[pn].match = rg.match.substr d[pn].start-rg.start, d[pn+1].start-d[pn].start
-            pn += 1        
-            
-    # log noon.stringify d, colors:true
-    log d
-            
-    
-flatten = (ranges) ->
-    for r in ranges
-        log r.match
-    
-regs = config patterns
-rngs = ranges regs, "  _abc1234twowords-2342onewordxxx1yy2zzzz3x4y5z6"    
-#                    0123456789 123456789 123456789 123456789 1234567
-#                             10        20        30        40
-
-# log noon.stringify rngs, colors:true 
-
-dissect rngs
+            d[pn].stack.push [rg.index, rg.value]
+            if pn+1 < d.length
+                if not d[pn].match
+                    d[pn].match = rg.match.substr d[pn].start-rg.start, d[pn+1].start-d[pn].start
+                pn += 1
+            else
+                if not d[pn].match
+                    d[pn].match = rg.match.substr d[pn].start-rg.start
+                break
+    d = d.filter (i) -> i.match?
+    d = d.map (i) -> 
+        i.stack = i.stack.sort((a,b)->a[0]-b[0]).map (j) -> j[1]
+        i
 
 module.exports = 
     config:  config
     ranges:  ranges
     dissect: dissect
-    flatten: flatten
