@@ -12,8 +12,7 @@ colors = require 'colors'
 noon   = require 'noon'
 matchr = require './matchr'
 _      = require 'lodash'
-
-log = console.log
+log    = console.log
 
 ###
  0000000   00000000    0000000    0000000
@@ -81,7 +80,6 @@ version   #{require("#{__dirname}/../package.json").version}
 
 colorize = (names, s) ->
     for n in names.split '.'
-        log n, s
         s = colors[n] s
     s
 
@@ -126,7 +124,6 @@ pattern = (chunk) ->
     
     rngs = matchr.ranges matchrConfig, chunk
     diss = matchr.dissect rngs
-    log noon.stringify diss, colors:true
     if diss.length
         for di in [diss.length-1..0]
             d = diss[di]

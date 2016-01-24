@@ -94,7 +94,6 @@
     ref2 = names.split('.');
     for (m = 0, len2 = ref2.length; m < len2; m++) {
       n = ref2[m];
-      log(n, s);
       s = colors[n](s);
     }
     return s;
@@ -165,9 +164,6 @@
     var clrzd, d, di, diss, len2, m, o, ref2, ref3, rngs, sv;
     rngs = matchr.ranges(matchrConfig, chunk);
     diss = matchr.dissect(rngs);
-    log(noon.stringify(diss, {
-      colors: true
-    }));
     if (diss.length) {
       for (di = m = ref2 = diss.length - 1; ref2 <= 0 ? m <= 0 : m >= 0; di = ref2 <= 0 ? ++m : --m) {
         d = diss[di];
