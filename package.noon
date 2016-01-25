@@ -13,6 +13,6 @@ author        monsterkodi
 license       Unlicense
 dependencies
               colors  ^1.1.2
-              karg    >=0.1.34
-              lodash  ^4.0.0
-              noon    >=0.8.2
+              karg    >=0.2.1
+              lodash  ^4.0.1
+              noon    >=0.8.3
