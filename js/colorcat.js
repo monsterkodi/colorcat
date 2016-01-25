@@ -91,14 +91,19 @@
   000        000   000     000        000     00000000  000   000  000   000
    */
 
-  colorize = function(names, s) {
-    var len2, m, n, ref2;
-    ref2 = names.split('.');
-    for (m = 0, len2 = ref2.length; m < len2; m++) {
-      n = ref2[m];
-      s = colors[n](s);
+  colorize = function(names, str) {
+    var len2, m, n, spl;
+    spl = names.split('.');
+    if (_.last(spl).substr(0, 2) === "s:") {
+      str = spl.pop().substr(2);
     }
-    return s;
+    for (m = 0, len2 = spl.length; m < len2; m++) {
+      n = spl[m];
+      if (colors[n] != null) {
+        str = colors[n](str);
+      }
+    }
+    return str;
   };
 
   regexes = [];
@@ -111,10 +116,16 @@
     invert.f = 'bold';
     invert.d = 'dim';
     expd = function(c) {
+      var r, s;
       if (indexOf.call(cnames, c) < 0) {
-        return c.split('').map(function(a) {
+        s = c.split('s\:');
+        r = s[0].split('').map(function(a) {
           return invert[a];
         }).join('.');
+        if (s.length > 1) {
+          r += '.s:' + s[1];
+        }
+        return r;
       } else {
         return c;
       }

@@ -79,10 +79,14 @@ version   #{require("#{__dirname}/../package.json").version}
 000        000   000     000        000     00000000  000   000  000   000
 ###
 
-colorize = (names, s) ->
-    for n in names.split '.'
-        s = colors[n] s
-    s
+colorize = (names, str) ->
+    spl = names.split '.'
+    if _.last(spl).substr(0,2) == "s:"
+        str = spl.pop().substr(2)
+    for n in spl
+        if colors[n]?
+            str = colors[n] str
+    str
 
 regexes = []
 
@@ -95,7 +99,10 @@ expand = (e) ->
 
     expd = (c) ->
         if c not in cnames
-            c.split('').map((a) -> invert[a]).join '.'
+            s = c.split('s\:')
+            r = s[0].split('').map((a) -> invert[a]).join('.')
+            r += '.s:' + s[1] if s.length > 1
+            r
         else
             c
     
