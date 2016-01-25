@@ -69,15 +69,16 @@ ranges = (regexes, str) ->
                     if _.isArray(value) and j < value.length then value = value[j]
                     else if _.isObject(value) and j < _.size(value) 
                         value = [_.keys(value)[j], value[_.keys(value)[j]]]
-                    gs += match[0].slice(gs).indexOf match[j+1]
+                    gi = match[0].slice(gs).indexOf match[j+1]
                     rgs.push
-                        start: match.index + i + gs
+                        start: match.index + i + gs + gi
                         match: match[j+1]
                         value: value
                         index: r
+                    gs += match[j+1].length
                 i += match.index + match[0].length
                 s = str.slice i
-                
+            
     rgs.sort (a,b) -> 
         if a.start == b.start
             if a.match.length == b.match.length
@@ -124,6 +125,7 @@ dissect = (ranges) ->
             d.push
                 start: si
                 stack: []
+
     p = 0
     for ri in [0...ranges.length]
         rg = ranges[ri]

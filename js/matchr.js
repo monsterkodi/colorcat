@@ -41,7 +41,7 @@
    */
 
   ranges = function(regexes, str) {
-    var arg, gs, i, j, k, l, match, r, ref, ref1, reg, rgs, s, value;
+    var arg, gi, gs, i, j, k, l, match, r, ref, ref1, reg, rgs, s, value;
     rgs = [];
     for (r = k = 0, ref = regexes.length; 0 <= ref ? k < ref : k > ref; r = 0 <= ref ? ++k : --k) {
       reg = regexes[r][0];
@@ -71,13 +71,14 @@
             } else if (_.isObject(value) && j < _.size(value)) {
               value = [_.keys(value)[j], value[_.keys(value)[j]]];
             }
-            gs += match[0].slice(gs).indexOf(match[j + 1]);
+            gi = match[0].slice(gs).indexOf(match[j + 1]);
             rgs.push({
-              start: match.index + i + gs,
+              start: match.index + i + gs + gi,
               match: match[j + 1],
               value: value,
               index: r
             });
+            gs += match[j + 1].length;
           }
           i += match.index + match[0].length;
           s = str.slice(i);
