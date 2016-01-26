@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var _, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, config, dimText, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, path, pattern, patterns, ref, ref1, ref2, ref3, regexes, sds, stream, syntaxFile, text, textColors,
+  var _, amap, ansi, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, config, dimText, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, path, pattern, patterns, ref, ref1, ref2, ref3, regexes, sds, stream, syntaxFile, text, textColors,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   fs = require('fs');
@@ -80,31 +80,89 @@
     bgrdColors += "    " + c + "  . = false . - " + bgrd[c] + " . ? " + (colors.reset(colors[bg](ci))) + "\n";
   }
 
-  args = require('karg')("\ncolorcat\n\n    file         . ? the file to display or stdin . *\n" + textColors + "\n    fat          . ? " + '▲▲     fat'.bold.white + "   . = false\n    dim                                           . = false\n        ?           |" + '    ▲▲ dim'.dim.white + " \n" + bgrdColors + "\n    pattern      . ? colorize with pattern\n    patternFile  . ? colorize with patterns in file . - P\n    \nversion   " + (require(__dirname + "/../package.json").version));
+  args = require('karg')("\ncolorcat\n\n    file         . ? the file to display or stdin . *\n" + textColors + "\n    fat          . ? " + '▲▲     fat'.bold.white + "   . = false\n    dim                                           . = false\n        ?           |" + '    ▲▲ dim'.dim.white + " \n" + bgrdColors + "\n    pattern      . ? colorize with pattern\n    patternFile  . ? colorize with patterns in file . - P\n    ansi256      . ? use 256 colors ansi codes    . = false\n    \nansi256              \n            ∘ use " + 'ansi-256-colors'.gray.bold + " instead of " + 'colors'.gray.bold + " module\n            ∘ colors don't get stripped when piping\n    \nversion   " + (require(__dirname + "/../package.json").version));
 
 
   /*
-  00000000    0000000   000000000  000000000  00000000  00000000   000   000
-  000   000  000   000     000        000     000       000   000  0000  000
-  00000000   000000000     000        000     0000000   0000000    000 0 000
-  000        000   000     000        000     000       000   000  000  0000
-  000        000   000     000        000     00000000  000   000  000   000
+   0000000   000   000   0000000  000
+  000   000  0000  000  000       000
+  000000000  000 0 000  0000000   000
+  000   000  000  0000       000  000
+  000   000  000   000  0000000   000
+   */
+
+  ansi = null;
+
+  amap = null;
+
+  if (args.ansi256) {
+    ansi = require('./colors');
+    amap = {
+      red: [ansi.r2, ansi.r4, ansi.r7],
+      green: [ansi.g2, ansi.g4, ansi.g7],
+      blue: [ansi.b2, ansi.b6, ansi.b7],
+      yellow: [ansi.y2, ansi.y5, ansi.y6],
+      magenta: [ansi.m1, ansi.m2, ansi.m4],
+      cyan: [ansi.c1, ansi.c2, ansi.c4],
+      black: [ansi.w1, ansi.w1, ansi.w2],
+      gray: [ansi.w2, ansi.w4, ansi.w6],
+      white: [ansi.w6, ansi.w7, ansi.w8]
+    };
+  }
+
+
+  /*
+   0000000   0000000   000       0000000   00000000   000  0000000  00000000
+  000       000   000  000      000   000  000   000  000     000   000     
+  000       000   000  000      000   000  0000000    000    000    0000000 
+  000       000   000  000      000   000  000   000  000   000     000     
+   0000000   0000000   0000000   0000000   000   000  000  0000000  00000000
    */
 
   colorize = function(names, str) {
-    var len2, m, n, spl;
+    var i, len2, len3, m, n, o, rev, spl;
     spl = names.split('.');
     if (_.last(spl).substr(0, 2) === "s:") {
       str = spl.pop().substr(2);
     }
-    for (m = 0, len2 = spl.length; m < len2; m++) {
-      n = spl[m];
-      if (colors[n] != null) {
-        str = colors[n](str);
+    if (args.ansi256) {
+      i = 1;
+      if (indexOf.call(spl, 'dim') >= 0) {
+        i = 0;
+      }
+      if (indexOf.call(spl, 'bold') >= 0) {
+        i = 2;
+      }
+      rev = _.reverse(spl);
+      for (m = 0, len2 = rev.length; m < len2; m++) {
+        n = rev[m];
+        if (amap[n] != null) {
+          str = amap[n][i] + str;
+        }
+      }
+      if (indexOf.call(spl, 'bold') >= 0) {
+        str = ansi.bold + str;
+      }
+      str += ansi.reset;
+    } else {
+      for (o = 0, len3 = spl.length; o < len3; o++) {
+        n = spl[o];
+        if (colors[n] != null) {
+          str = colors[n](str);
+        }
       }
     }
     return str;
   };
+
+
+  /*
+  00000000  000   000  00000000    0000000   000   000  0000000  
+  000        000 000   000   000  000   000  0000  000  000   000
+  0000000     00000    00000000   000000000  000 0 000  000   000
+  000        000 000   000        000   000  000  0000  000   000
+  00000000  000   000  000        000   000  000   000  0000000
+   */
 
   regexes = [];
 
@@ -142,6 +200,15 @@
     }
     return e;
   };
+
+
+  /*
+  00000000    0000000   000000000  000000000  00000000  00000000   000   000   0000000
+  000   000  000   000     000        000     000       000   000  0000  000  000     
+  00000000   000000000     000        000     0000000   0000000    000 0 000  0000000 
+  000        000   000     000        000     000       000   000  000  0000       000
+  000        000   000     000        000     00000000  000   000  000   000  0000000
+   */
 
   if (args.file != null) {
     syntaxFile = path.join(__dirname, '..', 'syntax', path.extname(args.file).substr(1) + '.noon');
@@ -188,7 +255,7 @@
       for (di = m = ref2 = diss.length - 1; ref2 <= 0 ? m <= 0 : m >= 0; di = ref2 <= 0 ? ++m : --m) {
         d = diss[di];
         clrzd = d.match;
-        ref3 = d.stack;
+        ref3 = d.stack.reverse();
         for (o = 0, len2 = ref3.length; o < len2; o++) {
           sv = ref3[o];
           clrzd = sv(clrzd);
@@ -270,7 +337,7 @@
           return funkyBgrd(dimText(l));
         });
       }
-      return process.stdout.write(colorLines.join('\n'));
+      return log(colorLines.join('\n'));
     });
   };
 
