@@ -131,7 +131,7 @@ colorize = (str, stack) ->
     
         i = 1
         i = 2 if 'bold' in spl
-        i = 0 if 'dim' in spl
+        i = 0 if 'dim'  in spl
         for n in spl
             if amap[n]?
                 str = amap[n][i] + str
@@ -248,7 +248,7 @@ else
 
 colorStream = (stream) ->
     stream.on 'data', (chunk) ->
-        lines = chunk.split '\n'
+        lines = chunk.split('\n').filter (l) -> l.length > 0
         if args.pattern
             colorLines = lines.map (l) -> pattern l
         else

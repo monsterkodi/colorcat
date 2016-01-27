@@ -327,7 +327,9 @@
   colorStream = function(stream) {
     return stream.on('data', function(chunk) {
       var colorLines, lines;
-      lines = chunk.split('\n');
+      lines = chunk.split('\n').filter(function(l) {
+        return l.length > 0;
+      });
       if (args.pattern) {
         colorLines = lines.map(function(l) {
           return pattern(l);
