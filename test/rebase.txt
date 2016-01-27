@@ -1,0 +1,28 @@
+First, rewinding head to replay your work on top of it...
+Applying: dont diff lame
+Applying: colorcat renamed to cc
+Using index info to reconstruct a base tree...
+M	colorcat/commit.noon
+M	colorcat/status.noon
+<stdin>:84: trailing whitespace.
+^(\s\S+\s*)(..\d+\.\d+\.\d+)(\s*\S\s*)(..\d+\.\d+\.\d+)  . g . x . xf . gf  
+<stdin>:94: trailing whitespace.
+(\S+)(@)([\d\.]+)         . g  . z . m 
+<stdin>:96: trailing whitespace.
+[\s┬─├└│]+                  xd 
+warning: 3 lines add whitespace errors.
+Falling back to patching base and 3-way merge...
+Applying: status
+Using index info to reconstruct a base tree...
+M	cc/status.noon
+Falling back to patching base and 3-way merge...
+Auto-merging cc/status.noon
+CONFLICT (content): Merge conflict in cc/status.noon
+Failed to merge in the changes.
+Patch failed at 0003 status
+The copy of the patch that failed is found in:
+   /Users/kodi/s/konrad/.git/rebase-apply/patch
+
+When you have resolved this problem, run "git rebase --continue".
+If you prefer to skip this patch, run "git rebase --skip" instead.
+To check out the original branch and stop rebasing, run "git rebase --abort".

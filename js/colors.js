@@ -365,6 +365,10 @@
 
   module.exports.bg = colors.bg.getRgb;
 
+  module.exports.strip = function(s) {
+    return s.replace(/\u001b\[*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[m]/g, '');
+  };
+
   module.exports.show = function() {
     var fn, len2, len3, o, p, q, s;
     for (o = 0, len2 = BG_COLORS.length; o < len2; o++) {

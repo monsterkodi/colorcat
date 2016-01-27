@@ -5,3 +5,12 @@ Writing objects: 100% (10/10), 2.11 KiB | 0 bytes/s, done.
 Total 10 (delta 5), reused 0 (delta 0)
 To git@github.com:monsterkodi/colorcat.git
    16b2270..ff5357b  master -> master
+
+To git@github.com:monsterkodi/konrad.git
+ ! [rejected]        master -> master (fetch first)
+error: failed to push some refs to 'git@github.com:monsterkodi/konrad.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.

@@ -84,7 +84,7 @@
     bgrdColors += "    " + c + "  . = false . - " + bgrd[c] + " . ? " + (colors.reset(colors[bg](ci))) + "\n";
   }
 
-  args = require('karg')("\ncolorcat\n\n    file         . ? the file to display or stdin . *\n" + textColors + "\n    fat          . ? " + '▲▲     fat'.bold.white + "   . = false\n    dim                                           . = false\n        ?           |" + '    ▲▲ dim'.dim.white + " \n" + bgrdColors + "\n    pattern      . ? colorize with pattern\n    patternFile  . ? colorize with patterns in file . - P\n    ansi256      . ? use 256 colors ansi codes    . = false\n    \nansi256              \n            ∘ use " + 'ansi-256-colors'.gray.bold + " instead of " + 'colors'.gray.bold + " module\n            ∘ colors don't get stripped when piping\n    \nversion   " + (require(__dirname + "/../package.json").version));
+  args = require('karg')("\ncolorcat\n\n    file         . ? the file to display or stdin . *\n" + textColors + "\n    fat          . ? " + '▲▲     fat'.bold.white + "   . = false\n    dim                                           . = false\n        ?           |" + '    ▲▲ dim'.dim.white + " \n" + bgrdColors + "\n    pattern      . ? colorize with pattern\n    patternFile  . ? colorize with patterns in file . - P\n    skipEmpty    . ? skip empty lines             . = false\n    ansi256      . ? use 256 colors ansi codes    . = false\n    \nansi256              \n            ∘ use " + 'ansi-256-colors'.gray.bold + " instead of " + 'colors'.gray.bold + " module\n            ∘ colors don't get stripped when piping\n    \nversion   " + (require(__dirname + "/../package.json").version));
 
 
   /*
@@ -346,6 +346,15 @@
       } else {
         colorLines = lines.map(function(l) {
           return funkyBgrd(dimText(l));
+        });
+      }
+      if (args.skipEmpty) {
+        colorLines = colorLines.filter(function(l) {
+          if (args.ansi256) {
+            return ansi.strip(l).length > 0;
+          } else {
+            return colors.strip(l).length > 0;
+          }
         });
       }
       return log(colorLines.join('\n'));

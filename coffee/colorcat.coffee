@@ -69,6 +69,7 @@ colorcat
 #{bgrdColors}
     pattern      . ? colorize with pattern
     patternFile  . ? colorize with patterns in file . - P
+    skipEmpty    . ? skip empty lines             . = false
     ansi256      . ? use 256 colors ansi codes    . = false
     
 ansi256              
@@ -258,6 +259,12 @@ colorStream = (stream) ->
             colorLines = lines.map (l) -> pattern l
         else
             colorLines = lines.map (l) -> funkyBgrd dimText l
+        if args.skipEmpty
+            colorLines = colorLines.filter (l) -> 
+                if args.ansi256
+                    ansi.strip(l).length > 0
+                else
+                    colors.strip(l).length > 0
         log colorLines.join '\n'
 
 ###

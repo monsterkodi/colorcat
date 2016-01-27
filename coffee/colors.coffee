@@ -71,6 +71,8 @@ for fg in FG_COLORS
 module.exports.fg = colors.fg.getRgb
 module.exports.bg = colors.bg.getRgb
 	
+module.exports.strip = (s) -> s.replace /\u001b\[*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[m]/g, ''
+	
 module.exports.show = () ->
 	for bg in BG_COLORS
 		for bi in [1..8]
