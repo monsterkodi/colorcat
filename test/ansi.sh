@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
+CC="`dirname $0`/../bin/colorcat"
 echo
-echo " Examples " | colorcat -aBfw
+echo " Examples " | $CC -aBfw
 echo
-echo "colorize script messages: " | colorcat -afw
+echo "colorize script messages: " | $CC -afw
 echo 
-echo ' WARNING! colors ahead!' | colorcat -ap "(.+)(!)(.+) . Rfy . Rfr . Yr" 
+echo ' WARNING! colors ahead!' | $CC -ap "(.+)(!)(.+) . Rfy . Rfr . Yr" 
 echo
-echo "highlight spaces in a file: " | colorcat -afw
+echo "highlight spaces in a file: " | $CC -afw
 echo
-head -n 4 package.noon | colorcat -ap "\s  R :: .* fx" 
+head -n 4 package.noon | $CC -ap "\s  R :: .* fx" 
 echo
-echo "highlight multiple words: " | colorcat -afw
+echo "highlight multiple words: " | $CC -afw
 echo
-head -n 6 package.noon | colorcat -ap "color rf :: cat gf :: git mf :: hub cf :: .* fx" 
+head -n 6 package.noon | $CC -ap " .* fx :: color r :: cat g :: git m :: hub c" 
 echo
-echo "colorize the output of a command line tool: " | colorcat -afw
+echo "colorize the output of a command line tool: " | $CC -afw
 echo
-npm ls --depth 2 | colorcat -ap "([\s┬─├└│]+)(\S+)(@)([\d\.]+) . xd . g . z . m :: (\S+)(@)([\d\.]+)\s(.*) . yf . z . mf . z"
-echo "syntax highlighting:" | colorcat -fw
+npm ls --depth 2 | $CC -a -p "([\s┬─├└│]+)(\S+)(@)([\d\.]+) . xd . g . zs:- . m :: (\S+)(@)([\d\.]+)\s(.*) . yf . zs:- . mf . z"
+echo "syntax highlighting:" | $CC -afw
 echo
-cat package.noon | colorcat -aP syntax/noon.noon 
+cat package.noon | $CC -a -P syntax/noon.noon 

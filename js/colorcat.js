@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var _, amap, ansi, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, config, dimText, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, path, pattern, patterns, ref, ref1, ref2, ref3, regexes, sds, stream, syntaxFile, text, textColors,
+  var _, amap, ansi, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, path, pattern, patterns, ref, ref1, ref2, ref3, regexes, sds, stream, syntaxFile, text, textColors,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   fs = require('fs');
@@ -98,15 +98,24 @@
   if (args.ansi256) {
     ansi = require('./colors');
     amap = {
-      red: [ansi.r2, ansi.r4, ansi.r7],
-      green: [ansi.g2, ansi.g4, ansi.g7],
+      red: [ansi.r2, ansi.r4, ansi.r5],
+      green: [ansi.g2, ansi.g4, ansi.g5],
       blue: [ansi.b2, ansi.b6, ansi.b7],
       yellow: [ansi.y2, ansi.y5, ansi.y6],
       magenta: [ansi.m1, ansi.m2, ansi.m4],
       cyan: [ansi.c1, ansi.c2, ansi.c4],
       black: [ansi.w1, ansi.w1, ansi.w2],
-      gray: [ansi.w2, ansi.w4, ansi.w6],
-      white: [ansi.w6, ansi.w7, ansi.w8]
+      gray: [ansi.w2, ansi.w4, ansi.w5],
+      white: [ansi.w6, ansi.w7, ansi.w8],
+      bgRed: [ansi.R4, ansi.R4, ansi.R4],
+      bgGreen: [ansi.G4, ansi.G4, ansi.G4],
+      bgBlue: [ansi.B6, ansi.B6, ansi.B6],
+      bgYellow: [ansi.Y5, ansi.Y5, ansi.Y5],
+      bgMagenta: [ansi.M2, ansi.M2, ansi.M2],
+      bgCyan: [ansi.C2, ansi.C2, ansi.C2],
+      bgBlack: [ansi.W1, ansi.W1, ansi.W1],
+      bgGray: [ansi.W4, ansi.W4, ansi.W4],
+      bgWhite: [ansi.W7, ansi.W7, ansi.W7]
     };
   }
 
@@ -119,23 +128,32 @@
    0000000   0000000   0000000   0000000   000   000  000  0000000  00000000
    */
 
-  colorize = function(names, str) {
-    var i, len2, len3, m, n, o, rev, spl;
-    spl = names.split('.');
-    if (_.last(spl).substr(0, 2) === "s:") {
-      str = spl.pop().substr(2);
+  colorize = function(str, stack) {
+    var i, len2, len3, len4, m, n, o, p, s, spl;
+    spl = stack.map(function(s) {
+      return s.split('.');
+    });
+    spl = _.flatten(spl);
+    for (m = 0, len2 = spl.length; m < len2; m++) {
+      s = spl[m];
+      if (s.substr(0, 2) === 's:') {
+        str = s.substr(2);
+        spl = spl.filter(function(s) {
+          return s.substr(0, 2) !== 's:';
+        });
+        break;
+      }
     }
     if (args.ansi256) {
       i = 1;
-      if (indexOf.call(spl, 'dim') >= 0) {
-        i = 0;
-      }
       if (indexOf.call(spl, 'bold') >= 0) {
         i = 2;
       }
-      rev = _.reverse(spl);
-      for (m = 0, len2 = rev.length; m < len2; m++) {
-        n = rev[m];
+      if (indexOf.call(spl, 'dim') >= 0) {
+        i = 0;
+      }
+      for (o = 0, len3 = spl.length; o < len3; o++) {
+        n = spl[o];
         if (amap[n] != null) {
           str = amap[n][i] + str;
         }
@@ -145,8 +163,8 @@
       }
       str += ansi.reset;
     } else {
-      for (o = 0, len3 = spl.length; o < len3; o++) {
-        n = spl[o];
+      for (p = 0, len4 = spl.length; p < len4; p++) {
+        n = spl[p];
         if (colors[n] != null) {
           str = colors[n](str);
         }
@@ -231,35 +249,17 @@
     if (!args.pattern) {
       args.pattern = true;
     }
-    config = _.mapValues(patterns, function(v) {
-      if (_.isArray(v)) {
-        return v.map(function(i) {
-          return function(s) {
-            return colorize(i, s);
-          };
-        });
-      } else {
-        return function(s) {
-          return colorize(v, s);
-        };
-      }
-    });
-    matchrConfig = matchr.config(config);
+    matchrConfig = matchr.config(patterns);
   }
 
   pattern = function(chunk) {
-    var clrzd, d, di, diss, len2, m, o, ref2, ref3, rngs, sv;
+    var clrzd, d, di, diss, m, ref2, rngs;
     rngs = matchr.ranges(matchrConfig, chunk);
     diss = matchr.dissect(rngs);
     if (diss.length) {
       for (di = m = ref2 = diss.length - 1; ref2 <= 0 ? m <= 0 : m >= 0; di = ref2 <= 0 ? ++m : --m) {
         d = diss[di];
-        clrzd = d.match;
-        ref3 = d.stack.reverse();
-        for (o = 0, len2 = ref3.length; o < len2; o++) {
-          sv = ref3[o];
-          clrzd = sv(clrzd);
-        }
+        clrzd = colorize(d.match, d.stack.reverse());
         chunk = chunk.slice(0, d.start) + clrzd + chunk.slice(d.start + d.match.length);
       }
     }

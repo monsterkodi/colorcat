@@ -1,10 +1,12 @@
-^\S+$                xf
-(^\S+\s\s)(.*)     . xf . f
-(^\s+\S+\s\s)(.*)  . x . f
-(https?)(://\S*)   . yd . y
-\.?\/?\S+\/\S+       g
-null|true|false      m
-["\.:,{}><^=/]       d    
-\d+\.\d+\.\d+        r
-\d+\.?\d+?           m
-.*                   w
+.*                       w
+^\S+$                    xf
+\.?\/?\S+\/\S+           g
+null|true|false          m
+\d+\.?\d+?               m
+\d+\.\d+\.\d+            r
+(^\S+\s\s).*             . xf
+(^\s+\S+\s\s)(.*)        . x  . f
+(https?://)(\S*)         . yd . y
+["\,\{\}]+               bd    
+[>=^]                    xd
+[\/\.:]+                 d

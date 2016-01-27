@@ -89,15 +89,24 @@ amap = null
 if args.ansi256
     ansi = require './colors'
     amap = 
-        red:     [ansi.r2, ansi.r4, ansi.r7]
-        green:   [ansi.g2, ansi.g4, ansi.g7]
-        blue:    [ansi.b2, ansi.b6, ansi.b7]
-        yellow:  [ansi.y2, ansi.y5, ansi.y6]
-        magenta: [ansi.m1, ansi.m2, ansi.m4]
-        cyan:    [ansi.c1, ansi.c2, ansi.c4]
-        black:   [ansi.w1, ansi.w1, ansi.w2]
-        gray:    [ansi.w2, ansi.w4, ansi.w6]
-        white:   [ansi.w6, ansi.w7, ansi.w8]
+        red:       [ansi.r2, ansi.r4, ansi.r5]
+        green:     [ansi.g2, ansi.g4, ansi.g5]
+        blue:      [ansi.b2, ansi.b6, ansi.b7]
+        yellow:    [ansi.y2, ansi.y5, ansi.y6]
+        magenta:   [ansi.m1, ansi.m2, ansi.m4]
+        cyan:      [ansi.c1, ansi.c2, ansi.c4]
+        black:     [ansi.w1, ansi.w1, ansi.w2]
+        gray:      [ansi.w2, ansi.w4, ansi.w5]
+        white:     [ansi.w6, ansi.w7, ansi.w8]
+        bgRed:     [ansi.R4, ansi.R4, ansi.R4]
+        bgGreen:   [ansi.G4, ansi.G4, ansi.G4]
+        bgBlue:    [ansi.B6, ansi.B6, ansi.B6]
+        bgYellow:  [ansi.Y5, ansi.Y5, ansi.Y5]
+        bgMagenta: [ansi.M2, ansi.M2, ansi.M2]
+        bgCyan:    [ansi.C2, ansi.C2, ansi.C2]
+        bgBlack:   [ansi.W1, ansi.W1, ansi.W1]
+        bgGray:    [ansi.W4, ansi.W4, ansi.W4]
+        bgWhite:   [ansi.W7, ansi.W7, ansi.W7]
 
 ###
  0000000   0000000   000       0000000   00000000   000  0000000  00000000
@@ -107,23 +116,30 @@ if args.ansi256
  0000000   0000000   0000000   0000000   000   000  000  0000000  00000000
 ###
 
-colorize = (names, str) ->
-    
-    spl = names.split '.'
-    if _.last(spl).substr(0,2) == "s:"
-        str = spl.pop().substr(2)
-        
+colorize = (str, stack) ->
+
+    spl = stack.map (s) -> s.split '.'
+    spl = _.flatten spl
+
+    for s in spl
+        if s.substr(0,2) == 's:'
+            str = s.substr(2)
+            spl = spl.filter (s) -> s.substr(0,2) != 's:'
+            break
+            
     if args.ansi256
+    
         i = 1
-        i = 0 if 'dim' in spl
         i = 2 if 'bold' in spl
-        rev = _.reverse(spl)
-        for n in rev
+        i = 0 if 'dim' in spl
+        for n in spl
             if amap[n]?
                 str = amap[n][i] + str
-        str = ansi.bold + str if 'bold' in spl
+        str  = ansi.bold + str if 'bold' in spl
         str += ansi.reset
+        
     else
+        
         for n in spl
             if colors[n]?
                 str = colors[n] str
@@ -180,13 +196,7 @@ matchrConfig = null
 
 if patterns?
     args.pattern = true if not args.pattern
-    config = _.mapValues patterns, (v) -> 
-        if _.isArray v
-            v.map (i) -> (s) -> colorize i, s
-        else
-            (s) -> colorize v, s
-            
-    matchrConfig = matchr.config config
+    matchrConfig = matchr.config patterns
         
 pattern = (chunk) ->
     
@@ -196,9 +206,7 @@ pattern = (chunk) ->
     if diss.length
         for di in [diss.length-1..0]
             d = diss[di]
-            clrzd = d.match    
-            for sv in d.stack.reverse()
-                clrzd = sv(clrzd)
+            clrzd = colorize d.match, d.stack.reverse()
             chunk = chunk.slice(0, d.start) + clrzd + chunk.slice(d.start+d.match.length)
     chunk
 
@@ -245,7 +253,6 @@ colorStream = (stream) ->
             colorLines = lines.map (l) -> pattern l
         else
             colorLines = lines.map (l) -> funkyBgrd dimText l
-        # process.stdout.write colorLines.join '\n'
         log colorLines.join '\n'
 
 ###
