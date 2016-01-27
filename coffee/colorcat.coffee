@@ -13,7 +13,9 @@ colors = require 'colors'
 noon   = require 'noon'
 matchr = require './matchr'
 _      = require 'lodash'
+
 log    = console.log
+error  = (err) -> process.stderr.write "[ERROR] #{err}\n"
 
 ###
  0000000   00000000    0000000    0000000
@@ -117,32 +119,35 @@ if args.ansi256
 ###
 
 colorize = (str, stack) ->
+    try
+        spl = stack.map (s) -> 
+            String(s).split '.'
+        spl = _.flatten spl
 
-    spl = stack.map (s) -> s.split '.'
-    spl = _.flatten spl
-
-    for s in spl
-        if s.substr(0,2) == 's:'
-            str = s.substr(2)
-            spl = spl.filter (s) -> s.substr(0,2) != 's:'
-            break
+        for s in spl
+            if s.substr(0,2) == 's:'
+                str = s.substr(2)
+                spl = spl.filter (s) -> s.substr(0,2) != 's:'
+                break
+                
+        if args.ansi256
+        
+            i = 1
+            i = 2 if 'bold' in spl
+            i = 0 if 'dim'  in spl
+            for n in spl
+                if amap[n]?
+                    str = amap[n][i] + str
+            str  = ansi.bold + str if 'bold' in spl
+            str += ansi.reset
             
-    if args.ansi256
-    
-        i = 1
-        i = 2 if 'bold' in spl
-        i = 0 if 'dim'  in spl
-        for n in spl
-            if amap[n]?
-                str = amap[n][i] + str
-        str  = ansi.bold + str if 'bold' in spl
-        str += ansi.reset
-        
-    else
-        
-        for n in spl
-            if colors[n]?
-                str = colors[n] str
+        else
+            
+            for n in spl
+                if colors[n]?
+                    str = colors[n] str
+    catch err
+        error err
     str
 
 ###
@@ -163,7 +168,7 @@ expand = (e) ->
     invert.d = 'dim'
 
     expd = (c) ->
-        if c not in cnames
+        if c? and c not in cnames
             s = c.split('s\:')
             r = s[0].split('').map((a) -> invert[a]).join('.')
             r += '.s:' + s[1] if s.length > 1

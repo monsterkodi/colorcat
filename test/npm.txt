@@ -1,0 +1,7 @@
+/usr/local/bin/colorcat -> /usr/local/lib/node_modules/colorcat/bin/colorcat
+/usr/local/lib
+└─┬ colorcat@0.9.1 
+  └─┬ noon@0.8.3
+    └─┬ sds@1.4.23
+      └── simple-plist@0.0.5 
+

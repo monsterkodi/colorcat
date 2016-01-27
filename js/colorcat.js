@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var _, amap, ansi, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, path, pattern, patterns, ref, ref1, ref2, ref3, regexes, sds, stream, syntaxFile, text, textColors,
+  var _, amap, ansi, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, error, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, path, pattern, patterns, ref, ref1, ref2, ref3, regexes, sds, stream, syntaxFile, text, textColors,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   fs = require('fs');
@@ -26,6 +26,10 @@
   _ = require('lodash');
 
   log = console.log;
+
+  error = function(err) {
+    return process.stderr.write("[ERROR] " + err + "\n");
+  };
 
 
   /*
@@ -129,46 +133,51 @@
    */
 
   colorize = function(str, stack) {
-    var i, len2, len3, len4, m, n, o, p, s, spl;
-    spl = stack.map(function(s) {
-      return s.split('.');
-    });
-    spl = _.flatten(spl);
-    for (m = 0, len2 = spl.length; m < len2; m++) {
-      s = spl[m];
-      if (s.substr(0, 2) === 's:') {
-        str = s.substr(2);
-        spl = spl.filter(function(s) {
-          return s.substr(0, 2) !== 's:';
-        });
-        break;
-      }
-    }
-    if (args.ansi256) {
-      i = 1;
-      if (indexOf.call(spl, 'bold') >= 0) {
-        i = 2;
-      }
-      if (indexOf.call(spl, 'dim') >= 0) {
-        i = 0;
-      }
-      for (o = 0, len3 = spl.length; o < len3; o++) {
-        n = spl[o];
-        if (amap[n] != null) {
-          str = amap[n][i] + str;
+    var err, error1, i, len2, len3, len4, m, n, o, p, s, spl;
+    try {
+      spl = stack.map(function(s) {
+        return String(s).split('.');
+      });
+      spl = _.flatten(spl);
+      for (m = 0, len2 = spl.length; m < len2; m++) {
+        s = spl[m];
+        if (s.substr(0, 2) === 's:') {
+          str = s.substr(2);
+          spl = spl.filter(function(s) {
+            return s.substr(0, 2) !== 's:';
+          });
+          break;
         }
       }
-      if (indexOf.call(spl, 'bold') >= 0) {
-        str = ansi.bold + str;
-      }
-      str += ansi.reset;
-    } else {
-      for (p = 0, len4 = spl.length; p < len4; p++) {
-        n = spl[p];
-        if (colors[n] != null) {
-          str = colors[n](str);
+      if (args.ansi256) {
+        i = 1;
+        if (indexOf.call(spl, 'bold') >= 0) {
+          i = 2;
+        }
+        if (indexOf.call(spl, 'dim') >= 0) {
+          i = 0;
+        }
+        for (o = 0, len3 = spl.length; o < len3; o++) {
+          n = spl[o];
+          if (amap[n] != null) {
+            str = amap[n][i] + str;
+          }
+        }
+        if (indexOf.call(spl, 'bold') >= 0) {
+          str = ansi.bold + str;
+        }
+        str += ansi.reset;
+      } else {
+        for (p = 0, len4 = spl.length; p < len4; p++) {
+          n = spl[p];
+          if (colors[n] != null) {
+            str = colors[n](str);
+          }
         }
       }
+    } catch (error1) {
+      err = error1;
+      error(err);
     }
     return str;
   };
@@ -193,7 +202,7 @@
     invert.d = 'dim';
     expd = function(c) {
       var r, s;
-      if (indexOf.call(cnames, c) < 0) {
+      if ((c != null) && indexOf.call(cnames, c) < 0) {
         s = c.split('s\:');
         r = s[0].split('').map(function(a) {
           return invert[a];
