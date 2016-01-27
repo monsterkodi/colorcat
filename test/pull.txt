@@ -85,3 +85,14 @@ Fast-forward
  create mode 100644 jade/.konrad.noon
  delete mode 100644 package.json
  create mode 100644 package.noon
+ 
+Removing package.json
+Auto-merging jade/tiles.styl
+CONFLICT (content): Merge conflict in jade/tiles.styl
+Removing gulpfile.coffee
+Removing coffee/tools/resolve.coffee
+Removing coffee/tools/log.coffee
+Removing bin/run
+Removing bin/publish
+Removing bin/log
+Automatic merge failed; fix conflicts and then commit the result.
