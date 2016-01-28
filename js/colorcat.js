@@ -139,14 +139,16 @@
         return String(s).split('.');
       });
       spl = _.flatten(spl);
-      for (m = 0, len2 = spl.length; m < len2; m++) {
-        s = spl[m];
-        if (s.substr(0, 2) === 's:') {
-          str = s.substr(2);
-          spl = spl.filter(function(s) {
-            return s.substr(0, 2) !== 's:';
-          });
-          break;
+      if (!(indexOf.call(spl, 'keep') >= 0)) {
+        for (m = 0, len2 = spl.length; m < len2; m++) {
+          s = spl[m];
+          if (s.substr(0, 2) === 's:') {
+            str = s.substr(2);
+            spl = spl.filter(function(s) {
+              return s.substr(0, 2) !== 's:';
+            });
+            break;
+          }
         }
       }
       if (args.ansi256) {
@@ -200,6 +202,7 @@
     invert = _.invert(clrlst);
     invert.f = 'bold';
     invert.d = 'dim';
+    invert.k = 'keep';
     expd = function(c) {
       var r, s;
       if ((c != null) && indexOf.call(cnames, c) < 0) {

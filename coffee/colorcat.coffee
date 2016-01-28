@@ -125,11 +125,12 @@ colorize = (str, stack) ->
             String(s).split '.'
         spl = _.flatten spl
 
-        for s in spl
-            if s.substr(0,2) == 's:'
-                str = s.substr(2)
-                spl = spl.filter (s) -> s.substr(0,2) != 's:'
-                break
+        if not ('keep' in spl)
+            for s in spl
+                if s.substr(0,2) == 's:'
+                    str = s.substr(2)
+                    spl = spl.filter (s) -> s.substr(0,2) != 's:'
+                    break
                 
         if args.ansi256
         
@@ -167,6 +168,7 @@ expand = (e) ->
     invert = _.invert clrlst
     invert.f = 'bold'
     invert.d = 'dim'
+    invert.k = 'keep'
 
     expd = (c) ->
         if c? and c not in cnames
