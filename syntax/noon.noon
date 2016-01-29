@@ -4,9 +4,10 @@
 true                          bf
 false                         xd
 (^\S+\s\s).*                  . xf
-(^\s+\S+\s\s)(.*)             . x  . w
+(^\s+\S+\s\s)(.*)             . x . w
 (^|\s+)([+-]?\d+\.?\d*)\s*$   . k . mf
 (^|\s+)([\^\=><~]*\d+\.\d+\.\d+)\s*$    . k . r
-(file|git|https?)(://)(\S*)   . r  . r . y
+([\/\S]*)(\/)(\S+)            . g . gd . gf
+(file|git|https?)(://)(\S*)   . r . r . y
 ["\,\{\}]+                    bd    
 [>=^\/\.:]                    d
