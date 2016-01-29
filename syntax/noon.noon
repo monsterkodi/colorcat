@@ -1,12 +1,12 @@
-.*                       w
-^\S+$                    xf
-\.?\/?\S+\/\S+           g
-null|true|false          mf
-\d+\.?\d+?               mf
-\d+\.\d+\.\d+            rf
-(^\S+\s\s).*             . xf
-(^\s+\S+\s\s)(.*)        . x  . f
-(https?:)(//)(\S*)       . r  . r . y
-["\,\{\}]+               bd    
-[>=^]                    xd
-[\/\.:]+                 d
+.*                            w
+^\S+$                         xf
+\.?\/?\S+\/\S+                g
+true                          bf
+false                         xd
+(^\S+\s\s).*                  . xf
+(^\s+\S+\s\s)(.*)             . x  . w
+(^|\s+)([+-]?\d+\.?\d*)\s*$   . k . mf
+(^|\s+)([\^\=><~]*\d+\.\d+\.\d+)\s*$    . k . r
+(file|git|https?)(://)(\S*)   . r  . r . y
+["\,\{\}]+                    bd    
+[>=^\/\.:]                    d

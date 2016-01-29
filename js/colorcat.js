@@ -8,12 +8,10 @@
  */
 
 (function() {
-  var _, amap, ansi, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, error, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, path, pattern, patterns, ref, ref1, ref2, ref3, regexes, sds, stream, syntaxFile, text, textColors,
+  var _, amap, ansi, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, error, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, path, pattern, patterns, ref, ref1, ref2, ref3, regexes, stream, syntaxFile, text, textColors,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   fs = require('fs');
-
-  sds = require('sds');
 
   path = require('path');
 
@@ -243,7 +241,7 @@
   if (args.file != null) {
     syntaxFile = path.join(__dirname, '..', 'syntax', path.extname(args.file).substr(1) + '.noon');
     if (fs.existsSync(syntaxFile)) {
-      patterns = expand(sds.load(syntaxFile));
+      patterns = expand(noon.load(syntaxFile));
     }
   }
 
@@ -252,7 +250,7 @@
   }
 
   if (args.patternFile != null) {
-    patterns = expand(sds.load(args.patternFile));
+    patterns = expand(noon.load(args.patternFile));
   }
 
   matchrConfig = null;
