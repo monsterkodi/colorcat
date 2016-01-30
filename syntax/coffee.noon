@@ -5,17 +5,17 @@
 #  000       000   000  000       000       000       000     
 #   0000000   0000000   000       000       00000000  00000000
 
+!=                             x
 [\[\]<>+-=]                    x
 ->                             bf
 
-# comments
+# braces
 
-|###|                          xd
-(#)(.*)                      . xd . x
+[\(\)\{\}]                     xf
 
 # keywords
 
-(^|\s)(if|else|then|for|of|in|while|do|unless|not|or|and)(\s|$)  . w . mf . w
+(^|\s)(if|else|then|for|of|in|while|do|unless|not|or|and|try|catch)(\s|$)  . w . mf . w
 
 # require
 
@@ -24,7 +24,17 @@
 # class
 
 class                          yf
-console                        x
+
+# globals
+
+                        x
+(\bconsole\.|\bprocess\.|\bglobal\.|\bmodule\.|\bexports\.|\bpath\.)  . gdf
+
+# special
+
+\blog\b                        gf
+\berr\b                        r
+\berror\b                      rf
 
 # interpolation content
 
@@ -52,6 +62,10 @@ null|undefined                 m
 (\w+)\s*=\s*->               . yf
 (\()([^\(\)]*)(\)\s*)->      . bf . gf . bf
 
+# .property
+
+(\.\w+)                      . g
+
 # range
 
 (\[).*(\.\.\.).*(\])         . mdf . mf . mdf
@@ -68,13 +82,9 @@ null|undefined                 m
 
 \S+(\?)                      . mf
 
-# braces
-
-[\(\)\{\}]                     xf
-
 # punctuation
 
-[\,\.]                         wdf
+[\,\.]                         df
 
 # lodash
 
@@ -84,13 +94,16 @@ null|undefined                 m
 
 (\#\{|\})                    . d
 
-# .property
-
-\.(\w+)                      . g
-
 #number
 
-\b\d+\b                        mf
+\b\d+\b                        m
+[^\s0].*(\b\d+\b)            . f
+(\b\d+\b).*[^\s0]            . f
+
+# comments
+
+|###|                          xd
+(#[^\{])(.*)                      . xd . x
 
 # salt header
 

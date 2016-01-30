@@ -5,7 +5,7 @@
 #  000   000       000
 #   0000000   0000000 
 
-\!   mf
+\!                             mf
 [\[\]\<\>\+\-\=\?\:]           x
 !=                             xf
 
@@ -16,15 +16,18 @@
 
 # keywords
 
-(^|\s)(if|else|then|for|in|var)(\s|$)  . w . mf . w
+(^|\s)(if|else|then|for|in|var|return|try|catch)(\s|$)  . w . mf . w
 
-# require
+# globals
 
-(\w+)\s*(=)\s*(require)(\(?\s*')(\S+)('\s*\)?\s*)  . yf . xd . x . xd . rf . xd
+\b(console|process|global|module|exports)\b  gd
 
-# console
+# special
 
-console                        x
+\bpath\b                       g
+\blog\b                        gf
+\berr\b                        r
+\berror\b                      rf
 
 # strings
 
@@ -41,12 +44,23 @@ false                          r
 
 null|undefined                 m
 
+# braces, semicolon
+
+[\(\)\{\}\;]                   fd
+[\{\}\;]                       x
+([\)]);                      . g
+
 # functions
 
+(\b\S+)(\()[^\)]*(\))              . g . fg . fg
 (\w+)\s*=\s*function\([^\)]*\)\s*  . yf
 (\w+)\s*=\s*function               . yf
 function                             b
-(function\s*\()([^\(\)]*)(\)\s*)   . k . gf . k
+(function\s*\()([^\(\)]*)(\)\s*)   . b . gf . bf
+
+# require
+
+(\w+)\s*(=)\s*(require)(\(?\s*')(\S+)('\s*\)?\s*)  . yf . xd . x . xd . rf . xd
 
 # array index
 
@@ -55,10 +69,6 @@ function                             b
 # dictionary key
 
 (\S+)(:)                     . fy . rfd
-
-# braces, semicolon
-
-[\(\)\{\}\;]                   xfd
 
 # punctuation
 
@@ -75,6 +85,8 @@ function                             b
 #number
 
 \b\d+\b                        m
+[^\s0].*(\b\d+\b)            . f
+(\b\d+\b).*[^\s0]            . f
 
 # salt header
 
