@@ -21,4 +21,4 @@ npm ls --depth 2 | $CC -sap "([\s┬─├└│]+)(\S+)(@)([\d\.]+) . xd . g . 
 echo
 echo "syntax highlighting:" | $CC -safw
 echo
-cat package.noon | $CC -saP syntax/noon.noon 
+$CC package.noon
