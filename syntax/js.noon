@@ -1,0 +1,81 @@
+
+#        000   0000000
+#        000  000     
+#        000  0000000 
+#  000   000       000
+#   0000000   0000000 
+
+\!   mf
+[\[\]\<\>\+\-\=\?\:]           x
+!=                             xf
+
+# comments
+
+\*/                              xd
+(//|/\*)(.*)                   . xd . x
+
+# keywords
+
+(^|\s)(if|else|then|for|in|var)(\s|$)  . w . mf . w
+
+# require
+
+(\w+)\s*(=)\s*(require)(\(?\s*')(\S+)('\s*\)?\s*)  . yf . xd . x . xd . rf . xd
+
+# console
+
+console                        x
+
+# strings
+
+(')([^']*)(')                . rfd . rf . rfd
+(")([^"]*)(")                . yf  . rf . yf
+"""                            rf
+
+# bool
+
+true                           g
+false                          r
+
+# null
+
+null|undefined                 m
+
+# functions
+
+(\w+)\s*=\s*function\([^\)]*\)\s*  . yf
+(\w+)\s*=\s*function               . yf
+function                             b
+(function\s*\()([^\(\)]*)(\)\s*)   . k . gf . k
+
+# array index
+
+\[(\d+)\]                    . mf
+
+# dictionary key
+
+(\S+)(:)                     . fy . rfd
+
+# braces, semicolon
+
+[\(\)\{\}\;]                   xfd
+
+# punctuation
+
+[\,\.]                         wfd
+
+# lodash
+
+(_)\.(\w+)                   . gf . gfd
+
+# .property
+
+\.(\w+)                      . g
+
+#number
+
+\b\d+\b                        m
+
+# salt header
+
+^[0\s]+$                       x
