@@ -20,7 +20,7 @@
 
 # globals
 
-\b(console|process|global|module|exports)\b  gd
+\b(console|process|global|module|exports|path|fs|os)\b  gd
 
 # special
 

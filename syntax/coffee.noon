@@ -27,8 +27,7 @@ class                          yf
 
 # globals
 
-                        x
-(\bconsole\.|\bprocess\.|\bglobal\.|\bmodule\.|\bexports\.|\bpath\.)  . gdf
+(\bconsole\.|\bprocess\.|\bglobal\.|\bmodule\.|\bexports\.|\bpath\.|\bfs\.|\bos\.)  . gdf
 
 # special
 
