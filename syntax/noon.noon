@@ -7,7 +7,7 @@
 
 # top level
 
-(^\S+\s\s).*                           . xf
+(^\S+)(\s\s.*|$)                       . xf . k
 
 # key value
 
