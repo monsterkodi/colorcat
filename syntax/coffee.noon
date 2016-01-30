@@ -1,30 +1,92 @@
-###                            xd
+#   0000000   0000000   00000000  00000000  00000000  00000000
+#  000       000   000  000       000       000       000     
+#  000       000   000  000000    000000    0000000   0000000 
+#  000       000   000  000       000       000       000     
+#   0000000   0000000   000       000       00000000  00000000
+
+[\[\]<>+-=]                    x
+->                             bf
+
+# comments
+
+|###|                          xd
 (#)(.*)                      . xd . x
+
+# keywords
+
 (^|\s)(if|else|then|for|of|in|while|do|unless|not|or|and)(\s|$)  . w . mf . w
+
+# require
+
 (\w+)\s*(=)\s*(require)(\(?\s*')(\S+)('\s*\)?\s*)  . yf . xd . x . xd . rf . xd
+
+# class
+
 class                          yf
 console                        x
+
+# string interpolation content
+
 \#\{([^\}\#]*)\}             . yf
+
+
 (')([^']*)(')                . rfd . rf . rfd
 ''|"""?                        rfd
 (")([^"]*)(")                . yf  . rf . yf
+
+# bool
+
 true                           g
 false                          r
+
+# null
+
 null|undefined                 m
+
+# functions
+
 (\w+)\s*=\s*\([^\)]*\)\s*->  . yf
 (\w+)\s*=\s*->               . yf
 (\()([^\(\)]*)(\)\s*)->      . bf . gf . bf
-->                             bf
+
 (\[).*(\.\.\.).*(\])         . mdf . mf . mdf
+
+# array index
+
 \[(\d+)\]                    . mf
-[0\s]+                         x
-\d+                            m
-[1-9]                          f
+
+# dictionary key
+
 (\S+)\s*(:)                  . fy . rfd
+
+# exists?
+
 \S+(\?)                      . mf
+
+# braces
+
 [\(\)\{\}]                     xf
-[\[\]\<\>\+\-\=]               x
+
+# punctuation
+
 [\,\.]                         wdf
+
+# lodash
+
 (_)\.(\w+)                   . gf . gfd
+
+# string interpolation markers
+
 (\#\{|\})                    . d
+
+#???
+
 \.(\w+)                      . g
+
+#number
+
+\d+                            m
+
+# salt header
+
+^[0\s]+$                       x

@@ -255,7 +255,7 @@ else
 
 colorStream = (stream) ->
     stream.on 'data', (chunk) ->
-        lines = chunk.split('\n').filter (l) -> l.length > 0
+        lines = chunk.split '\n'
         if args.pattern
             colorLines = lines.map (l) -> pattern l
         else

@@ -13,8 +13,8 @@
     "colorcat": "./bin/colorcat"
   },
   "preferGlobal": true,
-  "author": "monsterkodi",
-  "license": "Unlicense",
+  "author": 2,
+  "license": 2.3,
   "dependencies": {
     "ansi-256-colors": "^1.1.0",
     "colors": "^1.1.2",
