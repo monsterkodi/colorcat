@@ -25,14 +25,16 @@
 class                          yf
 console                        x
 
-# string interpolation content
+# interpolation content
 
 \#\{([^\}\#]*)\}             . yf
 
 
+# strings
+
 (')([^']*)(')                . rfd . rf . rfd
-''|"""?                        rfd
 (")([^"]*)(")                . yf  . rf . yf
+"""                            rf
 
 # bool
 
@@ -48,6 +50,8 @@ null|undefined                 m
 (\w+)\s*=\s*\([^\)]*\)\s*->  . yf
 (\w+)\s*=\s*->               . yf
 (\()([^\(\)]*)(\)\s*)->      . bf . gf . bf
+
+# range
 
 (\[).*(\.\.\.).*(\])         . mdf . mf . mdf
 
@@ -75,17 +79,17 @@ null|undefined                 m
 
 (_)\.(\w+)                   . gf . gfd
 
-# string interpolation markers
+# interpolation markers
 
 (\#\{|\})                    . d
 
-#???
+# .property
 
 \.(\w+)                      . g
 
 #number
 
-\d+                            m
+\b\d+\b                        m
 
 # salt header
 
