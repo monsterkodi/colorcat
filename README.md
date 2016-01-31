@@ -16,6 +16,8 @@ Contains syntax highlighting patterns for
 - [coffee](./syntax/coffee.noon)
 - [noon](./syntax/noon.noon) 
 - [json](./syntax/json.noon) 
+- [styl](./syntax/styl.noon) 
+- [css](./syntax/css.noon) 
 - [js](./syntax/js.noon) 
 - [md](./syntax/md.noon) 
 
