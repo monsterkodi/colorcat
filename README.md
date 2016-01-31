@@ -16,11 +16,15 @@ Contains syntax highlighting patterns for
 - [coffee](./syntax/coffee.noon)
 - [noon](./syntax/noon.noon) 
 - [json](./syntax/json.noon) 
+- [jade](./syntax/jade.noon) 
+- [html](./syntax/html.noon) 
 - [styl](./syntax/styl.noon) 
 - [css](./syntax/css.noon) 
-- [js](./syntax/js.noon) 
 - [md](./syntax/md.noon) 
+- [js](./syntax/js.noon) 
 
 A side by side comparison of my atom and colorcat highlighting for coffeescript:
 
 ![atomcat](img/atomcat.png)
+
+colorcat hopes you won't suffer brain damage due to too much colors :)

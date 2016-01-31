@@ -1,0 +1,76 @@
+
+#  000   000  000000000  00     00  000    
+#  000   000     000     000   000  000    
+#  000000000     000     000000000  000    
+#  000   000     000     000 0 000  000    
+#  000   000     000     000   000  0000000
+
+# braces
+
+[\(\)\{\}]                     xf
+
+# tags
+
+\/?>                           mfd
+(<\/?)(html|body|section|header|footer|meta|script|style|head|ul|li|a|b|br|p|center|table|title|link|nav|tr|th|td|div|span|img|h\d|dt|blockquote|pre|hr|svg|path)(\/?>|\ )   . mfd . mf . mfd
+
+(<!DOCTYPE)(.*)               . md . m
+
+# none
+
+\b(none)\b                     rfd
+
+# array index
+
+\[(\d+)\]                    . mf
+
+# punctuation
+
+[\,\.]                         df
+
+# attr
+
+([^\(\s]+)(=)                . x . xd
+
+# id
+
+(#)([^\s\(]+)                . y . yf 
+&                              yf
+
+# func
+
+([^\s\(\)]+)(\()(.+)(\)\s*$)            . g . gfd . k . gfd
+
+# string
+
+(')([^']*)(')                . rfd . rf . rfd
+(")([^"]*)(")                . rfd . rf . rfd
+
+# number
+
+\b\d+\b                        m
+[^\*\s0].*(\b\d+\b)            . f
+(\b\d+\b).*[^\*\s0]            . f
+(\d+)(px|%)                    . fm . m                       
+
+# colors
+
+(#)([\da-fA-F]{3})             . g  . gf
+(#)([\da-fA-F]{6})             . g  . gf
+(rgba?\s*)(\()([^\)]+)(\))     . g . gdf . gf . gdf
+\b(red|green|blue|yellow|magenta|cyan|black|gray|white|orange)\b   gf
+
+# comments
+
+<!--|-->                      xd
+(<!--)(.*)                  . xd . x
+(.*)(-->)                   . x . xd
+
+# template
+
+(<%.?)([^%]+)(%>)           . gdf . gf . gdf
+
+# salt header
+
+(^\*?)([0\s]+$)             . xd . x
+

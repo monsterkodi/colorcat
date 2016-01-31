@@ -1,21 +1,19 @@
 
-#   0000000  000000000  000   000  000    
-#  000          000      000 000   000    
-#  0000000      000       00000    000    
-#       000     000        000     000    
-#  0000000      000        000     0000000
+#        000   0000000   0000000    00000000
+#        000  000   000  000   000  000     
+#        000  000000000  000   000  0000000 
+#  000   000  000   000  000   000  000     
+#   0000000   000   000  0000000    00000000
 
 # braces
 
 [\(\)\{\}]                     xf
 
-# key vaue
-
-(^\s+\S+\s+)(.+)             . x . w
-
 # tags
 
-\b(html|body|section|header|footer|ul|li|a|b|br|p|center|table|title|link|nav|tr|th|td|div|span|img|h\d|dt|blockquote|pre|hr|svg|path)\b   mf
+\b(html|body|section|header|footer|meta|script|style|head|ul|li|a|b|br|p|center|table|title|link|nav|tr|th|td|div|span|img|h\d|dt|blockquote|pre|hr|svg|path)\b   mf
+
+doctype                        m
 
 # none
 
@@ -29,22 +27,25 @@
 
 [\,\.]                         df
 
-# tags
+# attr
+
+([^\(\s]+)(=)                . x . xd
 
 # id
 
-(#)(\S+)                     . y . yf 
+(#)([^\s\(]+)                . y . yf 
 &                              yf
 
 # class
 
-(\.)(\S+)                    . r . rf 
+(\.)([^\s\(]+)                . g . gf 
 
-# attr
+# string
 
-(:)([^\s\:]+)                . xfd . xf
+(')([^']*)(')                . rfd . rf . rfd
+(")([^"]*)(")                . r   . rf . r
 
-#number
+# number
 
 \b\d+\b                        m
 [^\*\s0].*(\b\d+\b)            . f

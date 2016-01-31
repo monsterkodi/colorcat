@@ -15,7 +15,7 @@
 
 # tags
 
-\b(html|body|section|header|ul|li|a|img|h\d|dt|blockquote|pre|hr|svg|path)\b   mf
+\b(html|body|section|header|footer|ul|li|a|b|br|p|center|table|title|link|nav|tr|th|td|div|span|img|h\d|dt|blockquote|pre|hr|svg|path)\b   mf
 
 # none
 
