@@ -8,7 +8,7 @@
  */
 
 (function() {
-  var _, amap, ansi, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, error, expand, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, path, pattern, patterns, ref, ref1, ref2, ref3, regexes, stream, syntaxFile, text, textColors,
+  var _, amap, ansi, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, error, expand, ext, fatText, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, log, m, matchr, matchrConfig, noon, o, path, pattern, patterns, ref, ref1, ref2, ref3, ref4, regexes, stream, syntaxFile, text, textColors,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   fs = require('fs');
@@ -82,7 +82,7 @@
     bgrdColors += "    " + c + "  . = false . - " + bgrd[c] + " . ? " + (colors.reset(colors[bg](ci))) + "\n";
   }
 
-  args = require('karg')("\ncolorcat\n\n    file         . ? the file to display or stdin . *\n" + textColors + "\n    fat          . ? " + '▲▲     fat'.bold.white + "   . = false\n    dim                                           . = false\n        ?           |" + '    ▲▲ dim'.dim.white + " \n" + bgrdColors + "\n    pattern      . ? colorize with pattern\n    patternFile  . ? colorize with patterns in file . - P\n    skipEmpty    . ? skip empty lines             . = false\n    ansi256      . ? use 256 colors ansi codes    . = false\n    \nansi256              \n            ∘ use " + 'ansi-256-colors'.gray.bold + " instead of " + 'colors'.gray.bold + " module\n            ∘ colors don't get stripped when piping\n    \nversion   " + (require(__dirname + "/../package.json").version));
+  args = require('karg')("\ncolorcat\n\n    file         . ? the file to display or stdin . *\n" + textColors + "\n    fat          . ? " + '▲▲     fat'.bold.white + "   . = false\n    dim                                           . = false\n        ?           |" + '    ▲▲ dim'.dim.white + " \n" + bgrdColors + "\n    ext          . ? use syntax highlighting for *.ext\n    pattern      . ? colorize with pattern\n    patternFile  . ? colorize with patterns in file . - P\n    skipEmpty    . ? skip empty lines             . = false\n    ansi256      . ? use 256 colors ansi codes    . = false\n    \nansi256              \n            ∘ use " + 'ansi-256-colors'.gray.bold + " instead of " + 'colors'.gray.bold + " module\n            ∘ colors don't get stripped when piping\n    \nversion   " + (require(__dirname + "/../package.json").version));
 
 
   /*
@@ -239,7 +239,8 @@
    */
 
   if (args.file != null) {
-    syntaxFile = path.join(__dirname, '..', 'syntax', path.extname(args.file).substr(1) + '.noon');
+    ext = (ref2 = args.ext) != null ? ref2 : path.extname(args.file).substr(1);
+    syntaxFile = path.join(__dirname, '..', 'syntax', ext + '.noon');
     if (fs.existsSync(syntaxFile)) {
       patterns = expand(noon.load(syntaxFile));
     }
@@ -263,11 +264,11 @@
   }
 
   pattern = function(chunk) {
-    var clrzd, d, di, diss, m, ref2, rngs;
+    var clrzd, d, di, diss, m, ref3, rngs;
     rngs = matchr.ranges(matchrConfig, chunk);
     diss = matchr.dissect(rngs);
     if (diss.length) {
-      for (di = m = ref2 = diss.length - 1; ref2 <= 0 ? m <= 0 : m >= 0; di = ref2 <= 0 ? ++m : --m) {
+      for (di = m = ref3 = diss.length - 1; ref3 <= 0 ? m <= 0 : m >= 0; di = ref3 <= 0 ? ++m : --m) {
         d = diss[di];
         clrzd = colorize(d.match, d.stack.reverse());
         chunk = chunk.slice(0, d.start) + clrzd + chunk.slice(d.start + d.match.length);
@@ -293,17 +294,17 @@
     return s;
   };
 
-  ref2 = _.keys(text);
-  for (m = 0, len2 = ref2.length; m < len2; m++) {
-    c = ref2[m];
+  ref3 = _.keys(text);
+  for (m = 0, len2 = ref3.length; m < len2; m++) {
+    c = ref3[m];
     if (args[c]) {
       funkyText = colors[c];
     }
   }
 
-  ref3 = _.keys(bgrd);
-  for (o = 0, len3 = ref3.length; o < len3; o++) {
-    c = ref3[o];
+  ref4 = _.keys(bgrd);
+  for (o = 0, len3 = ref4.length; o < len3; o++) {
+    c = ref4[o];
     if (args[c]) {
       funkyBgrd = colors['bg' + c.substr(2)];
     }

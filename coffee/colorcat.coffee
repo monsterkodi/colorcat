@@ -66,6 +66,7 @@ colorcat
     dim                                           . = false
         ?           |#{'    ▲▲ dim'.dim.white} 
 #{bgrdColors}
+    ext          . ? use syntax highlighting for *.ext
     pattern      . ? colorize with pattern
     patternFile  . ? colorize with patterns in file . - P
     skipEmpty    . ? skip empty lines             . = false
@@ -194,7 +195,8 @@ expand = (e) ->
 ###
 
 if args.file?
-    syntaxFile = path.join __dirname, '..', 'syntax', path.extname(args.file).substr(1) + '.noon'
+    ext = args.ext ? path.extname(args.file).substr(1)
+    syntaxFile = path.join __dirname, '..', 'syntax', ext + '.noon'
     patterns = expand noon.load syntaxFile if fs.existsSync syntaxFile
 patterns = expand noon.parse args.pattern if args.pattern?
 patterns = expand noon.load args.patternFile if args.patternFile?
