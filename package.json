@@ -1,7 +1,7 @@
 {
   "name": "colorcat",
   "description": "loves colors",
-  "version": "0.9.15",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/monsterkodi/colorcat"
@@ -18,8 +18,8 @@
   "dependencies": {
     "ansi-256-colors": "^1.1.0",
     "colors": "^1.1.2",
-    "karg": ">=0.3.1",
-    "lodash": "^4.1.0",
-    "noon": ">=0.9.12"
+    "karg": ">=1.0.1",
+    "lodash": "^4.2.0",
+    "noon": ">=1.0.1"
   }
 }
