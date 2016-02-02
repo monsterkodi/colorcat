@@ -9,11 +9,6 @@
 [\[\]\<\>\+\-\=\?\:]           x
 !=                             xf
 
-# comments
-
-\*/                              xd
-(//|/\*)(.*)                   . xd . x
-
 # keywords
 
 (^|\s)(if|else|then|for|in|var|return|try|catch)(\s|$)  . w . mf . w
@@ -87,6 +82,11 @@ function                             b
 \b\d+\b                        m
 [^\s0].*(\b\d+\b)            . f
 (\b\d+\b).*[^\s0]            . f
+
+# comments
+
+\*/                            xd
+(//|/\*|^\s+\*)(.*)          . xd . x
 
 # salt header
 

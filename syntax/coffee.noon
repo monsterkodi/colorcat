@@ -102,7 +102,7 @@ null|undefined                 m
 # comments
 
 |###|                          xd
-(#[^\{])(.*)                      . xd . x
+(#)([^\{].*|$)               . xd . x
 
 # salt header
 
