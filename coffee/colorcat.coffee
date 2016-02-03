@@ -87,10 +87,9 @@ version   #{require("#{__dirname}/../package.json").version}
 000   000  000   000  0000000   000
 ###
 
-ansi = null
+ansi = require './colors'
 amap = null
 if args.ansi256
-    ansi = require './colors'
     amap = 
         red:       [ansi.r2, ansi.r4, ansi.r5]
         green:     [ansi.g2, ansi.g4, ansi.g5]
@@ -208,7 +207,7 @@ if patterns?
     matchrConfig = matchr.config patterns
         
 pattern = (chunk) ->
-    
+    chunk = ansi.strip chunk
     rngs = matchr.ranges matchrConfig, chunk
     diss = matchr.dissect rngs
     

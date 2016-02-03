@@ -93,12 +93,11 @@
   000   000  000   000  0000000   000
    */
 
-  ansi = null;
+  ansi = require('./colors');
 
   amap = null;
 
   if (args.ansi256) {
-    ansi = require('./colors');
     amap = {
       red: [ansi.r2, ansi.r4, ansi.r5],
       green: [ansi.g2, ansi.g4, ansi.g5],
@@ -265,6 +264,7 @@
 
   pattern = function(chunk) {
     var clrzd, d, di, diss, m, ref3, rngs;
+    chunk = ansi.strip(chunk);
     rngs = matchr.ranges(matchrConfig, chunk);
     diss = matchr.dissect(rngs);
     if (diss.length) {
