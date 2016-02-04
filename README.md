@@ -16,6 +16,7 @@ Contains syntax highlighting patterns for
 - [coffee](./syntax/coffee.noon)
 - [noon](./syntax/noon.noon) 
 - [json](./syntax/json.noon) 
+- [yaml](./syntax/yaml.noon) 
 - [jade](./syntax/jade.noon) 
 - [html](./syntax/html.noon) 
 - [styl](./syntax/styl.noon) 
