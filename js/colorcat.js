@@ -243,6 +243,11 @@
     if (fs.existsSync(syntaxFile)) {
       patterns = expand(noon.load(syntaxFile));
     }
+  } else if (args.ext != null) {
+    syntaxFile = path.join(__dirname, '..', 'syntax', args.ext + '.noon');
+    if (fs.existsSync(syntaxFile)) {
+      patterns = expand(noon.load(syntaxFile));
+    }
   }
 
   if (args.pattern != null) {

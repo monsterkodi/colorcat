@@ -197,6 +197,10 @@ if args.file?
     ext = args.ext ? path.extname(args.file).substr(1)
     syntaxFile = path.join __dirname, '..', 'syntax', ext + '.noon'
     patterns = expand noon.load syntaxFile if fs.existsSync syntaxFile
+else if args.ext?
+    syntaxFile = path.join __dirname, '..', 'syntax', args.ext + '.noon'
+    patterns = expand noon.load syntaxFile if fs.existsSync syntaxFile
+    
 patterns = expand noon.parse args.pattern if args.pattern?
 patterns = expand noon.load args.patternFile if args.patternFile?
 
