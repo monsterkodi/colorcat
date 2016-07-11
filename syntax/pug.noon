@@ -1,0 +1,70 @@
+
+# 00000000   000   000   0000000 
+# 000   000  000   000  000      
+# 00000000   000   000  000  0000
+# 000        000   000  000   000
+# 000         0000000    0000000 
+
+# braces
+
+[\(\)\{\}]                     xf
+
+# tags
+
+\b(html|body|section|header|footer|meta|script|style|head|ul|li|a|b|br|p|center|table|title|link|nav|tr|th|td|div|span|img|h\d|dt|blockquote|pre|hr|svg|path)\b   mf
+
+doctype                        m
+
+# none
+
+\b(none)\b                     rfd
+
+# array index
+
+\[(\d+)\]                    . mf
+
+# punctuation
+
+[\,\.]                         df
+
+# attr
+
+([^\(\s]+)(=)                . x . xd
+
+# id
+
+(#)([^\s\(]+)                . y . yf 
+&                              yf
+
+# class
+
+(\.)([^\s\(]+)                . g . gf 
+
+# string
+
+(')([^']*)(')                . rfd . rf . rfd
+(")([^"]*)(")                . r   . rf . r
+
+# number
+
+\b\d+\b                        m
+[^\*\s0].*(\b\d+\b)            . f
+(\b\d+\b).*[^\*\s0]            . f
+(\d+)(px|%)                    . fm . m                       
+
+# colors
+
+(#)([\da-fA-F]{3})             . g  . gf
+(#)([\da-fA-F]{6})             . g  . gf
+(rgba?\s*)(\()([^\)]+)(\))     . g . gdf . gf . gdf
+\b(red|green|blue|yellow|magenta|cyan|black|gray|white|orange)\b   gf
+
+# comments
+
+\/\*|\*\/                     xd
+(\/\/)(.*)                  . xd . x
+
+# salt header
+
+(^\*?)([0\s]+$)             . xd . x
+
