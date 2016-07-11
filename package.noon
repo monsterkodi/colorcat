@@ -1,11 +1,11 @@
 name          colorcat
 description   loves colors
-version       1.0.6
+version       1.0.7
 repository
               type  git
               url   https://github.com/monsterkodi/colorcat
 bugs
-              url   https://github.com/monsterkodi/colorcat/issues
+              url  https://github.com/monsterkodi/colorcat/issues
 bin
               colorcat  ./bin/colorcat
 preferGlobal  true
