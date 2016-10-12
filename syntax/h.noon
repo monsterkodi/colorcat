@@ -1,0 +1,90 @@
+#  0000000  00000000   00000000         000   000
+# 000       000   000  000   000        000   000
+# 000       00000000   00000000         000000000
+# 000       000        000              000   000
+#  0000000  000        000              000   000
+
+\S+                            w
+
+[\<\>\+\-\=\/]                 x
+
+!=                             x
+
+# braces
+
+[\(\)\{\}\[\]]                 xd
+
+# include
+
+(#)(include)\s+([\<\"])(.*)([\>\"])   . xd . x . gd . gf . gd
+
+# class
+
+(class|struct)\s+(\w+)       . r . yf
+(\w+)\s*\(                         y
+
+# bool
+
+true                           bf
+false                          rf
+([\!])\w+                    . mf
+
+# punctuation
+
+[\,\.\;\:\/]                   xd
+
+# macros
+
+(\#)(define|pragma|endif|else|ifdef|ifndef|if)(.*)  . bd . bf . b
+(\b[A-Z\_]+)(\()([^\)]*)(\))                   . b . bd . bf . bd
+\b[A-Z0-9\_]+\b                                  b
+
+# null
+
+NULL                           m
+
+# .property
+
+\.(\s*\w+)                     g
+(\w+)(\:\:)(\w+)             . g . gd . gf
+
+\:\:(iterator|pair|string)   . bf
+
+# class construction
+
+new\s+(\w+)                    yf
+
+^(\w+)(\:\:)(\w+)\s*\(             . xf . yd . yf
+^\S+[^\:]*\s(\w+)(\:\:)(\w+)\s*\(  . xf . yd . yf
+
+(\-\>|\.)([\w]+)\s*\(              . rd . rf
+(\<)([^\<\>\-]+)(\>)               . md . mf . md
+
+# keywords
+this                           keyword.this
+(^|\s)(if|else|then|for|auto|using|namespace|static|while|do|return|break|continue|new|switch|case|default|const_cast|static_cast|dynamic_cast|reinterpret_cast|public:?|protected:?|private:?)([\;\s]|$)  
+    w
+    mf
+    w
+    
+\b(uint32_t|void|bool|int|float|double|long|unsigned|virtual|typedef|const)\b  . mf
+    
+#number
+
+(?:^|[^\.\"\'\w]|\.\.\.?)([\+\-]?)(\d+\.\d+f?)(?:$|[^\.\"\'\w]|\.\.\.?)  . m . mf
+(?:^|[^\.\"\'\w]|\.\.\.?)([\+\-]?)(\d+)(?:$|[^\.\"\'\w]|\.\.\.?)         . m . mf
+
+# strings
+(')([^']*)(')                . rd . rf . rd
+(")([^"\\]*)(")              . rd . rf . rd
+    
+# comments
+[\*\&\|]                       mf
+
+(\/\/+)\s*(.*)               . xd . xd
+(\/\*)(.*)(\*\/)             . xs . xd . xd
+
+# salter headers
+^\s*(\/\/)([0\s]+)$          . xd. x
+^([0\s]+)$                     x
+
