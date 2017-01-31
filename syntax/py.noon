@@ -1,0 +1,98 @@
+# 00000000   000   000
+# 000   000   000 000 
+# 00000000     00000  
+# 000           000   
+# 000           000   
+
+\S+                            w
+
+[\<\>\+\-\=\/\*]               x
+
+@                              x
+\$                             x
+\?                             x
+!=                             x
+->                             x
+=>                             x
+
+# braces
+
+[\(\)\{\}\[\]]                 x
+
+# class
+
+(class)\s+(\w+)              . mf . yf
+
+# globals
+
+(\bsys\.|\btypes\.|\bpath\.|\bos\.|\bjson\.|\bargparse\.)  . gdf
+
+# bool
+
+True                           g
+False                          r
+
+# null
+
+None                           m
+
+# class members
+
+(@\w+)(?=\s*[\?\=\,\+\-\.\<\>\*\/\]\[\)]|\s*$)    gf
+
+# .property
+
+(\s*\w+)\.                     gf
+\.(\s*\w+)                     g
+
+# functions 
+
+(:\s*)($|#.*$)                 mf
+
+def\s+(\w+)\s*(\()[^\)]*(\))\s*:    . yf . xd . xd
+
+(\w+)(?=\(|\s+[@\w\d\"\'\(\[\{])      y
+
+# special
+
+\blog\b                        gf
+\berr\b                        rf
+\berror\b                      rf
+
+# dictionary key
+
+("\S+"|'\S+')\s*(:)                 . g . gf
+
+# punctuation
+
+[\,\.\;]                       x
+
+# keywords
+
+(?:^|\s)(else:|try:|except:|print|pass|of|in|not|or|and|return|import|break|continue|global|from|import)(?:\s|$)   m
+(?:^|\s)(range|len)\s*\(                                            . m
+(?:^|\s)(def|if|elif|for|while|except)\s.*(:)\s*(?:$|#.*$)      . m . m
+     
+__name__|__class__  m
+
+#number
+
+(?:^|[^\.\"\'\w]|\.\.\.?)([\+\-]?)(\d+\.\d+)(?:$|[^\.\"\'\w]|\.\.\.?)   
+    m
+    m
+
+(?:^|[^\.\"\'\w]|\.\.\.?)([\+\-]?)(\d+)(?:$|[^\.\"\'\w]|\.\.\.?)   
+    c
+    c
+
+# strings
+(')([^'\\]*)(')              . rfd . rf . rfd
+(")([^"\\]*)(")              . rf . rf . rf
+     
+# comments
+
+(?:^|\s+)(#+)([^\{].*|$)     . xd . x
+
+# salter headers
+^\s*(\#)([0\s]+)$            . xd . x
+^([0\s]+)$                     x
