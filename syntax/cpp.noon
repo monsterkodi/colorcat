@@ -61,7 +61,7 @@ new\s+(\w+)                    yf
 (\<)([^\<\>\-]+)(\>)               . md . mf . md
 
 # keywords
-this                           keyword.this
+this                           m
 (^|\s)(if|else|then|for|auto|using|namespace|static|while|do|return|break|continue|new|switch|case|default|const_cast|static_cast|dynamic_cast|reinterpret_cast|public:?|protected:?|private:?)([\;\s]|$)  
     w
     mf
@@ -85,6 +85,6 @@ this                           keyword.this
 (\/\*)(.*)(\*\/)             . xs . xd . xd
 
 # salter headers
-^\s*(\/\/)([0\s]+)$          . xd. x
+^\s*(\/\/)([0\s]+)$          . xd . x
 ^([0\s]+)$                     x
 

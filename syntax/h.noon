@@ -85,6 +85,6 @@ this                           keyword.this
 (\/\*)(.*)(\*\/)             . xs . xd . xd
 
 # salter headers
-^\s*(\/\/)([0\s]+)$          . xd. x
+^\s*(\/\/)([0\s]+)$          . xd . x
 ^([0\s]+)$                     x
 
