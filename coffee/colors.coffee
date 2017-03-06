@@ -50,7 +50,7 @@ w5 = w 4*3; W5 = W 4*3+2;
 w6 = w 5*3; W6 = W 5*3+2;
 w7 = w 6*3; W7 = W 6*3+2;
 w8 = w 7*3; W8 = W 7*3+2;
-	
+    
 FG_COLORS = ['r', 'g', 'b', 'c', 'm', 'y', 'w']
 BG_COLORS = ['R', 'M', 'B', 'Y', 'G', 'C', 'W']
 
@@ -58,32 +58,32 @@ reset = module.exports.reset = colors.reset
 bold  = module.exports.bold  = '\x1b[1m'
 
 for bg in BG_COLORS
-	module.exports[bg] = eval(bg)
-	for bi in [1..8]
-		bn = bg+bi
-		module.exports[bn] = eval(bn)
+    module.exports[bg] = eval(bg)
+    for bi in [1..8]
+        bn = bg+bi
+        module.exports[bn] = eval(bn)
 
 for fg in FG_COLORS
-	module.exports[fg] = eval(fg)
-	for i in [1..8]
-		module.exports[fg+String(i)] = eval(fg+String(i))
-	
+    module.exports[fg] = eval(fg)
+    for i in [1..8]
+        module.exports[fg+String(i)] = eval(fg+String(i))
+    
 module.exports.fg = colors.fg.getRgb
 module.exports.bg = colors.bg.getRgb
-	
+    
 module.exports.strip = (s) -> s.replace /\u001b\[*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[m]/g, ''
-	
+    
 module.exports.show = () ->
-	for bg in BG_COLORS
-		for bi in [1..8]
-			s = reset
-			bn = bg+bi
-			s +=  eval(bg.toLowerCase()+bi) + bold 
-			s += "#{bg.toLowerCase()+bi} #{bg+bi} " + reset + eval(bn)
-			for fg in FG_COLORS
-				fn = bn+fg
-				s += module.exports[fn] + ' ' + fg + ' '
-			log s + reset
-	log " "
-		
+    for bg in BG_COLORS
+        for bi in [1..8]
+            s = reset
+            bn = bg+bi
+            s +=  eval(bg.toLowerCase()+bi) + bold 
+            s += "#{bg.toLowerCase()+bi} #{bg+bi} " + reset + eval(bn)
+            for fg in FG_COLORS
+                fn = fg+(9-bi)
+                s += module.exports[fn] + ' ' + fg+(9-bi) + ' '
+            log s + reset
+    log " "
+        
 # module.exports.show()

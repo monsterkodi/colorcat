@@ -14,7 +14,7 @@ matchr = require './matchr'
 _      = require 'lodash'
 
 log    = console.log
-error  = (err) -> process.stderr.write "[ERROR] #{err}\n"
+error  = (err) -> process.stderr.write "[ERROR] ".yellow + "#{err}\n".red
 
 ###
  0000000   00000000    0000000    0000000
@@ -60,7 +60,7 @@ args = require('karg') """
 
 colorcat
 
-    file         . ? the file to display or stdin . *
+    file         . ? the file(s) to display or stdin . **
 #{textColors}
     fat          . ? #{'▲▲     fat'.bold.white}   . = false
     dim                                           . = false
@@ -70,6 +70,7 @@ colorcat
     pattern      . ? colorize with pattern
     patternFile  . ? colorize with patterns in file . - P
     skipEmpty    . ? skip empty lines             . = false
+    lineNumbers  . ? prepend output with line numbers . = false
     ansi256      . ? use 256 colors ansi codes    . = false
     
 ansi256              
@@ -170,7 +171,7 @@ expand = (e) ->
     invert.k = 'keep'
 
     expd = (c) ->
-        if c? and c not in cnames
+        if c?.split? and c not in cnames
             s = c.split('s\:')
             r = s[0].split('').map((a) -> invert[a]).join('.')
             r += '.s:' + s[1] if s.length > 1
@@ -184,43 +185,6 @@ expand = (e) ->
         else
             e[pat] = expd cls
     e 
-
-###
-00000000    0000000   000000000  000000000  00000000  00000000   000   000   0000000
-000   000  000   000     000        000     000       000   000  0000  000  000     
-00000000   000000000     000        000     0000000   0000000    000 0 000  0000000 
-000        000   000     000        000     000       000   000  000  0000       000
-000        000   000     000        000     00000000  000   000  000   000  0000000 
-###
-
-if args.file?
-    ext = args.ext ? path.extname(args.file).substr(1)
-    syntaxFile = path.join __dirname, '..', 'syntax', ext + '.noon'
-    patterns = expand noon.load syntaxFile if fs.existsSync syntaxFile
-else if args.ext?
-    syntaxFile = path.join __dirname, '..', 'syntax', args.ext + '.noon'
-    patterns = expand noon.load syntaxFile if fs.existsSync syntaxFile
-    
-patterns = expand noon.parse args.pattern if args.pattern?
-patterns = expand noon.load args.patternFile if args.patternFile?
-
-matchrConfig = null
-
-if patterns?
-    args.pattern = true if not args.pattern
-    matchrConfig = matchr.config patterns
-        
-pattern = (chunk) ->
-    chunk = ansi.strip chunk
-    rngs = matchr.ranges matchrConfig, chunk
-    diss = matchr.dissect rngs
-    
-    if diss.length
-        for di in [diss.length-1..0]
-            d = diss[di]
-            clrzd = colorize d.match, d.stack.reverse()
-            chunk = chunk.slice(0, d.start) + clrzd + chunk.slice(d.start+d.match.length)
-    chunk
 
 ###
 00000000  000   000  000   000  000   000  000   000
@@ -251,6 +215,46 @@ else
     dimText = fatText
 
 ###
+00000000    0000000   000000000  000000000  00000000  00000000   000   000   0000000
+000   000  000   000     000        000     000       000   000  0000  000  000     
+00000000   000000000     000        000     0000000   0000000    000 0 000  0000000 
+000        000   000     000        000     000       000   000  000  0000       000
+000        000   000     000        000     00000000  000   000  000   000  0000000 
+###
+
+patternFunc = (file) ->
+    
+    loadSyntax = (f) -> expand noon.load f if fs.existsSync f
+    
+    if args.pattern?
+        patterns = expand noon.parse args.pattern
+    else if args.patternFile?
+        patterns = loadSyntax args.patternFile
+    else if args.ext?
+        patterns = loadSyntax path.join __dirname, '..', 'syntax', args.ext + '.noon'
+    else if file?
+        patterns = loadSyntax path.join __dirname, '..', 'syntax', path.extname(file).substr(1) + '.noon'
+    
+    if not patterns?
+        return (chunk) -> funkyBgrd dimText chunk
+        
+    matchrConfig = matchr.config patterns
+            
+    pattern = (chunk) ->
+        chunk = ansi.strip chunk
+        rngs = matchr.ranges matchrConfig, chunk
+        diss = matchr.dissect rngs
+        
+        if diss.length
+            for di in [diss.length-1..0]
+                d = diss[di]
+                clrzd = colorize d.match, d.stack.reverse()
+                chunk = chunk.slice(0, d.start) + clrzd + chunk.slice(d.start+d.match.length)
+        chunk
+        
+    return pattern
+
+###
  0000000  000000000  00000000   00000000   0000000   00     00
 000          000     000   000  000       000   000  000   000
 0000000      000     0000000    0000000   000000000  000000000
@@ -258,19 +262,21 @@ else
 0000000      000     000   000  00000000  000   000  000   000
 ###
 
-colorStream = (stream) ->
+colorStream = (stream, pattern) ->
+    lineno = 0
     stream.on 'data', (chunk) ->
         lines = chunk.split '\n'
-        if args.pattern
-            colorLines = lines.map (l) -> pattern l
-        else
-            colorLines = lines.map (l) -> funkyBgrd dimText l
+        colorLines = lines.map (l) -> pattern l
         if args.skipEmpty
             colorLines = colorLines.filter (l) -> 
                 if args.ansi256
                     ansi.strip(l).length > 0
                 else
                     colors.strip(l).length > 0
+        if args.lineNumbers
+            colorLines = colorLines.map (l) -> 
+                lineno += 1
+                return _.padEnd("#{lineno}",6).gray.dim + l
         log colorLines.join '\n'
 
 ###
@@ -281,9 +287,14 @@ colorStream = (stream) ->
  0000000  000   000     000     000      000       000  0000000  00000000
 ###
 
-if args.file
-    stream = fs.createReadStream args.file, encoding: 'utf8'
-    colorStream stream
+if args.file.length
+    
+    for file in args.file
+        stream = fs.createReadStream file, encoding: 'utf8'
+        stream.on 'error', (err) -> error " can't read file '#{file}': " + String(err).magenta
+        colorStream stream, patternFunc file
+            
 else
+    
     process.stdin.setEncoding 'utf8'
-    colorStream process.stdin
+    colorStream process.stdin, patternFunc()

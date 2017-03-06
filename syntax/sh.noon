@@ -1,0 +1,49 @@
+#  0000000  000   000
+# 000       000   000
+# 0000000   000000000
+#      000  000   000
+# 0000000   000   000
+
+\S+                            white
+
+[\<\>\+\-\=\/\*]               white.dim
+
+# braces
+
+[\(\)\{\}\[\]]                 white.dim
+
+# bool
+
+true                           blue
+false                          red
+
+\`                             yellow
+
+^[\w\-]+                       yellow
+\s(\-)(\w+)                  . magenta.dim . magenta
+
+# punctuation
+
+[\,\.\:\;\#\$\^\?\|\~]         gray.dim
+
+\b(if|elif|fi|then|else|echo|exit|while|case|esac|done|do|in|set)\b  blue.fat
+
+
+#number
+
+(?:^|[^\.\"\'\w]|\.\.\.?)([\+\-]?)(\d+\.\d+)(?:$|[^\.\"\'\w]|\.\.\.?)   
+    magenta
+    magenta.fat
+
+(?:^|[^\.\"\'\w]|\.\.\.?)([\+\-]?)(\d+)(?:$|[^\.\"\'\w]|\.\.\.?)   
+    magenta
+    magenta.fat
+
+# strings
+
+(')([^'\\]*)(')    . red.dim . red.fat . red.dim
+(")([^"\\]*)(")    . red.dim . red.fat . red.dim
+
+# comments
+
+(?:^|[^\$\#]+)(\#+)(.*)           . gray.dim . gray

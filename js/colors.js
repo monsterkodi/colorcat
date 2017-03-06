@@ -380,8 +380,8 @@
         s += ((bg.toLowerCase() + bi) + " " + (bg + bi) + " ") + reset + eval(bn);
         for (q = 0, len3 = FG_COLORS.length; q < len3; q++) {
           fg = FG_COLORS[q];
-          fn = bn + fg;
-          s += module.exports[fn] + ' ' + fg + ' ';
+          fn = fg + (9 - bi);
+          s += module.exports[fn] + ' ' + fg + (9 - bi) + ' ';
         }
         log(s + reset);
       }
