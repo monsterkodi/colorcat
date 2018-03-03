@@ -1,114 +1,70 @@
-
-/*
- 0000000   0000000   000       0000000   00000000    0000000
-000       000   000  000      000   000  000   000  000     
-000       000   000  000      000   000  0000000    0000000 
-000       000   000  000      000   000  000   000       000
- 0000000   0000000   0000000   0000000   000   000  0000000
- */
-
 (function() {
+  /*
+   0000000   0000000   000       0000000   00000000    0000000
+  000       000   000  000      000   000  000   000  000     
+  000       000   000  000      000   000  0000000    0000000 
+  000       000   000  000      000   000  000   000       000
+   0000000   0000000   0000000   0000000   000   000  0000000 
+  */
   var B, B1, B2, B3, B4, B5, B6, B7, B8, BG_COLORS, C, C1, C2, C3, C4, C5, C6, C7, C8, FG_COLORS, G, G1, G2, G3, G4, G5, G6, G7, G8, M, M1, M2, M3, M4, M5, M6, M7, M8, R, R1, R2, R3, R4, R5, R6, R7, R8, W, W1, W2, W3, W4, W5, W6, W7, W8, Y, Y1, Y2, Y3, Y4, Y5, Y6, Y7, Y8, b, b1, b2, b3, b4, b5, b6, b7, b8, bg, bi, bn, bold, c, c1, c2, c3, c4, c5, c6, c7, c8, colors, fg, g, g1, g2, g3, g4, g5, g6, g7, g8, i, j, k, l, len, len1, log, m, m1, m2, m3, m4, m5, m6, m7, m8, n, r, r1, r2, r3, r4, r5, r6, r7, r8, reset, w, w1, w2, w3, w4, w5, w6, w7, w8, y, y1, y2, y3, y4, y5, y6, y7, y8;
 
   colors = require('ansi-256-colors');
 
   log = console.log;
 
-  r = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  r = function(i = 4) {
     return (i < 6) && colors.fg.getRgb(i, 0, 0) || colors.fg.getRgb(5, i - 5, i - 5);
   };
 
-  R = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  R = function(i = 4) {
     return (i < 6) && colors.bg.getRgb(i, 0, 0) || colors.bg.getRgb(5, i - 5, i - 5);
   };
 
-  g = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  g = function(i = 4) {
     return (i < 6) && colors.fg.getRgb(0, i, 0) || colors.fg.getRgb(i - 5, 5, i - 5);
   };
 
-  G = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  G = function(i = 4) {
     return (i < 6) && colors.bg.getRgb(0, i, 0) || colors.bg.getRgb(i - 5, 5, i - 5);
   };
 
-  b = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  b = function(i = 4) {
     return (i < 6) && colors.fg.getRgb(0, 0, i) || colors.fg.getRgb(i - 5, i - 5, 5);
   };
 
-  B = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  B = function(i = 4) {
     return (i < 6) && colors.bg.getRgb(0, 0, i) || colors.bg.getRgb(i - 5, i - 5, 5);
   };
 
-  y = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  y = function(i = 4) {
     return (i < 6) && colors.fg.getRgb(i, i, 0) || colors.fg.getRgb(5, 5, i - 5);
   };
 
-  Y = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  Y = function(i = 4) {
     return (i < 6) && colors.bg.getRgb(i, i, 0) || colors.bg.getRgb(5, 5, i - 5);
   };
 
-  m = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  m = function(i = 4) {
     return (i < 6) && colors.fg.getRgb(i, 0, i) || colors.fg.getRgb(5, i - 5, 5);
   };
 
-  M = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  M = function(i = 4) {
     return (i < 6) && colors.bg.getRgb(i, 0, i) || colors.bg.getRgb(5, i - 5, 5);
   };
 
-  c = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  c = function(i = 4) {
     return (i < 6) && colors.fg.getRgb(0, i, i) || colors.fg.getRgb(i - 5, 5, 5);
   };
 
-  C = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  C = function(i = 4) {
     return (i < 6) && colors.bg.getRgb(0, i, i) || colors.bg.getRgb(i - 5, 5, 5);
   };
 
-  w = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  w = function(i = 4) {
     return colors.fg.grayscale[i];
   };
 
-  W = function(i) {
-    if (i == null) {
-      i = 4;
-    }
+  W = function(i = 4) {
     return colors.bg.grayscale[i];
   };
 
@@ -377,7 +333,7 @@
         s = reset;
         bn = bg + bi;
         s += eval(bg.toLowerCase() + bi) + bold;
-        s += ((bg.toLowerCase() + bi) + " " + (bg + bi) + " ") + reset + eval(bn);
+        s += `${bg.toLowerCase() + bi} ${bg + bi} ` + reset + eval(bn);
         for (q = 0, len3 = FG_COLORS.length; q < len3; q++) {
           fg = FG_COLORS[q];
           fn = fg + (9 - bi);
@@ -388,5 +344,8 @@
     }
     return log(" ");
   };
+
+  
+// module.exports.show()
 
 }).call(this);
