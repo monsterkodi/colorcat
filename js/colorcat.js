@@ -1,42 +1,72 @@
-
-/*
- 0000000   0000000   000       0000000   00000000    0000000   0000000   000000000
-000       000   000  000      000   000  000   000  000       000   000     000   
-000       000   000  000      000   000  0000000    000       000000000     000   
-000       000   000  000      000   000  000   000  000       000   000     000   
- 0000000   0000000   0000000   0000000   000   000   0000000  000   000     000
- */
-
 (function() {
-  var _, amap, ansi, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, error, expand, fatText, file, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, len4, log, m, matchr, noon, o, p, path, patternFunc, ref, ref1, ref2, ref3, ref4, regexes, stream, text, textColors,
-    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  fs = require('fs');
-
-  path = require('path');
-
-  colors = require('colors');
-
-  noon = require('noon');
-
-  matchr = require('./matchr');
-
-  _ = require('lodash');
-
-  log = console.log;
-
-  error = function(err) {
-    return process.stderr.write("[ERROR] ".yellow + (err + "\n").red);
-  };
-
-
+  /*
+   0000000   0000000   000       0000000   00000000    0000000   0000000   000000000
+  000       000   000  000      000   000  000   000  000       000   000     000   
+  000       000   000  000      000   000  0000000    000       000000000     000   
+  000       000   000  000      000   000  000   000  000       000   000     000   
+   0000000   0000000   0000000   0000000   000   000   0000000  000   000     000   
+  */
+  /*
+   0000000   000   000   0000000  000
+  000   000  0000  000  000       000
+  000000000  000 0 000  0000000   000
+  000   000  000  0000       000  000
+  000   000  000   000  0000000   000
+  */
+  /*
+   0000000  000000000  00000000   00000000   0000000   00     00
+  000          000     000   000  000       000   000  000   000
+  0000000      000     0000000    0000000   000000000  000000000
+   000     000     000   000  000       000   000  000 0 000
+  0000000      000     000   000  00000000  000   000  000   000
+  */
+  /*
+   0000000   0000000   000       0000000   00000000   000  0000000  00000000
+  000       000   000  000      000   000  000   000  000     000   000     
+  000       000   000  000      000   000  0000000    000    000    0000000 
+  000       000   000  000      000   000  000   000  000   000     000     
+   0000000   0000000   0000000   0000000   000   000  000  0000000  00000000
+  */
+  /*
+  00000000  000   000  000   000  000   000  000   000
+  000       000   000  0000  000  000  000    000 000 
+  000000    000   000  000 0 000  0000000      00000  
+  000       000   000  000  0000  000  000      000   
+  000        0000000   000   000  000   000     000   
+  */
+  /*
+  00000000    0000000   000000000  000000000  00000000  00000000   000   000   0000000
+  000   000  000   000     000        000     000       000   000  0000  000  000     
+  00000000   000000000     000        000     0000000   0000000    000 0 000  0000000 
+  000        000   000     000        000     000       000   000  000  0000       000
+  000        000   000     000        000     00000000  000   000  000   000  0000000 
+  */
+  /*
+  00000000  000   000  00000000    0000000   000   000  0000000  
+  000        000 000   000   000  000   000  0000  000  000   000
+  0000000     00000    00000000   000000000  000 0 000  000   000
+  000        000 000   000        000   000  000  0000  000   000
+  00000000  000   000  000        000   000  000   000  0000000  
+  */
   /*
    0000000   00000000    0000000    0000000
   000   000  000   000  000        000     
   000000000  0000000    000  0000  0000000 
   000   000  000   000  000   000       000
-  000   000  000   000   0000000   0000000
-   */
+  000   000  000   000   0000000   0000000 
+  */
+  var _, amap, ansi, args, bg, bgrd, bgrdColors, c, ci, colorStream, colorize, colors, dimText, error, expand, fatText, file, fs, funkyBgrd, funkyText, j, k, len, len1, len2, len3, len4, log, m, matchr, noon, o, p, patternFunc, ref, ref1, ref2, ref3, ref4, regexes, slash, stream, text, textColors,
+    indexOf = [].indexOf;
+
+  ({colors, slash, noon, fs, _} = require('kxk'));
+
+  matchr = require('./matchr');
+
+  log = console.log;
+
+  error = function(err) {
+    return process.stderr.write("[ERROR] ".yellow + `${err}\n`.red);
+  };
 
   text = {
     red: 'r',
@@ -55,7 +85,7 @@
   ref = _.keys(text);
   for (j = 0, len = ref.length; j < len; j++) {
     c = ref[j];
-    textColors += "    " + c + "  . = false . - " + text[c] + " . ? " + (colors[c].bold('██')) + (colors[c]('██')) + (colors[c].dim('██')) + " " + (colors[c](c)) + "\n";
+    textColors += `    ${c}  . = false . - ${text[c]} . ? ${colors[c].bold('██')}${colors[c]('██')}${colors[c].dim('██')} ${colors[c](c)}\n`;
   }
 
   bgrd = {
@@ -79,19 +109,10 @@
     if (c === 'bgBlack' || c === 'bgBlue') {
       ci = colors.white("    " + _.padEnd(c, 11));
     }
-    bgrdColors += "    " + c + "  . = false . - " + bgrd[c] + " . ? " + (colors.reset(colors[bg](ci))) + "\n";
+    bgrdColors += `    ${c}  . = false . - ${bgrd[c]} . ? ${colors.reset(colors[bg](ci))}\n`;
   }
 
-  args = require('karg')("\ncolorcat\n\n    file         . ? the file(s) to display or stdin . **\n" + textColors + "\n    fat          . ? " + '▲▲     fat'.bold.white + "   . = false\n    dim                                           . = false\n        ?           |" + '    ▲▲ dim'.dim.white + " \n" + bgrdColors + "\n    ext          . ? use syntax highlighting for *.ext\n    pattern      . ? colorize with pattern\n    patternFile  . ? colorize with patterns in file . - P\n    skipEmpty    . ? skip empty lines             . = false\n    lineNumbers  . ? prepend output with line numbers . = false\n    ansi256      . ? use 256 colors ansi codes    . = false\n    \nansi256              \n            ∘ use " + 'ansi-256-colors'.gray.bold + " instead of " + 'colors'.gray.bold + " module\n            ∘ colors don't get stripped when piping\n    \nversion   " + (require(__dirname + "/../package.json").version));
-
-
-  /*
-   0000000   000   000   0000000  000
-  000   000  0000  000  000       000
-  000000000  000 0 000  0000000   000
-  000   000  000  0000       000  000
-  000   000  000   000  0000000   000
-   */
+  args = require('karg')(`\ncolorcat\n\n    file         . ? the file(s) to display or stdin . **\n${textColors}\n    fat          . ? ${'▲▲     fat'.bold.white}   . = false\n    dim                                           . = false\n        ?           |${'    ▲▲ dim'.dim.white} \n${bgrdColors}\n    ext          . ? use syntax highlighting for *.ext\n    pattern      . ? colorize with pattern\n    patternFile  . ? colorize with patterns in file . - P\n    skipEmpty    . ? skip empty lines             . = false\n    lineNumbers  . ? prepend output with line numbers . = false\n    ansi256      . ? use 256 colors ansi codes    . = true\n    \nansi256              \n            ∘ use ${'ansi-256-colors'.gray.bold} instead of ${'colors'.gray.bold} module\n            ∘ colors don't get stripped when piping\n    \nversion   ${(require(`${__dirname}/../package.json`).version)}`);
 
   ansi = require('./colors');
 
@@ -119,15 +140,6 @@
       bgWhite: [ansi.W7, ansi.W7, ansi.W7]
     };
   }
-
-
-  /*
-   0000000   0000000   000       0000000   00000000   000  0000000  00000000
-  000       000   000  000      000   000  000   000  000     000   000     
-  000       000   000  000      000   000  0000000    000    000    0000000 
-  000       000   000  000      000   000  000   000  000   000     000     
-   0000000   0000000   0000000   0000000   000   000  000  0000000  00000000
-   */
 
   colorize = function(str, stack) {
     var err, i, len2, len3, len4, m, n, o, p, s, spl;
@@ -181,15 +193,6 @@
     return str;
   };
 
-
-  /*
-  00000000  000   000  00000000    0000000   000   000  0000000  
-  000        000 000   000   000  000   000  0000  000  000   000
-  0000000     00000    00000000   000000000  000 0 000  000   000
-  000        000 000   000        000   000  000  0000  000   000
-  00000000  000   000  000        000   000  000   000  0000000
-   */
-
   regexes = [];
 
   expand = function(e) {
@@ -227,15 +230,6 @@
     }
     return e;
   };
-
-
-  /*
-  00000000  000   000  000   000  000   000  000   000
-  000       000   000  0000  000  000  000    000 000 
-  000000    000   000  000 0 000  0000000      00000  
-  000       000   000  000  0000  000  000      000   
-  000        0000000   000   000  000   000     000
-   */
 
   funkyText = function(s) {
     return s;
@@ -277,15 +271,6 @@
     dimText = fatText;
   }
 
-
-  /*
-  00000000    0000000   000000000  000000000  00000000  00000000   000   000   0000000
-  000   000  000   000     000        000     000       000   000  0000  000  000     
-  00000000   000000000     000        000     0000000   0000000    000 0 000  0000000 
-  000        000   000     000        000     000       000   000  000  0000       000
-  000        000   000     000        000     00000000  000   000  000   000  0000000
-   */
-
   patternFunc = function(file) {
     var loadSyntax, matchrConfig, pattern, patterns;
     loadSyntax = function(f) {
@@ -298,9 +283,9 @@
     } else if (args.patternFile != null) {
       patterns = loadSyntax(args.patternFile);
     } else if (args.ext != null) {
-      patterns = loadSyntax(path.join(__dirname, '..', 'syntax', args.ext + '.noon'));
+      patterns = loadSyntax(slash.join(__dirname, '..', 'syntax', args.ext + '.noon'));
     } else if (file != null) {
-      patterns = loadSyntax(path.join(__dirname, '..', 'syntax', path.extname(file).substr(1) + '.noon'));
+      patterns = loadSyntax(slash.join(__dirname, '..', 'syntax', slash.ext(file) + '.noon'));
     }
     if (patterns == null) {
       return function(chunk) {
@@ -314,7 +299,7 @@
       rngs = matchr.ranges(matchrConfig, chunk);
       diss = matchr.dissect(rngs);
       if (diss.length) {
-        for (di = p = ref4 = diss.length - 1; ref4 <= 0 ? p <= 0 : p >= 0; di = ref4 <= 0 ? ++p : --p) {
+        for (di = p = ref4 = diss.length - 1; (ref4 <= 0 ? p <= 0 : p >= 0); di = ref4 <= 0 ? ++p : --p) {
           d = diss[di];
           clrzd = colorize(d.match, d.stack.reverse());
           chunk = chunk.slice(0, d.start) + clrzd + chunk.slice(d.start + d.match.length);
@@ -324,15 +309,6 @@
     };
     return pattern;
   };
-
-
-  /*
-   0000000  000000000  00000000   00000000   0000000   00     00
-  000          000     000   000  000       000   000  000   000
-  0000000      000     0000000    0000000   000000000  000000000
-       000     000     000   000  000       000   000  000 0 000
-  0000000      000     000   000  00000000  000   000  000   000
-   */
 
   colorStream = function(stream, pattern) {
     var lineno;
@@ -355,13 +331,12 @@
       if (args.lineNumbers) {
         colorLines = colorLines.map(function(l) {
           lineno += 1;
-          return _.padEnd("" + lineno, 6).gray.dim + l;
+          return _.padEnd(`${lineno}`, 6).gray.dim + l;
         });
       }
       return log(colorLines.join('\n'));
     });
   };
-
 
   /*
    0000000   0000000   000000000      000  00000000  000  000      00000000
@@ -369,8 +344,7 @@
   000       000000000     000       000    000000    000  000      0000000 
   000       000   000     000      000     000       000  000      000     
    0000000  000   000     000     000      000       000  0000000  00000000
-   */
-
+  */
   if (args.file.length) {
     ref4 = args.file;
     for (p = 0, len4 = ref4.length; p < len4; p++) {
@@ -379,7 +353,7 @@
         encoding: 'utf8'
       });
       stream.on('error', function(err) {
-        return error((" can't read file '" + file + "': ") + String(err).magenta);
+        return error(` can't read file '${file}': ` + String(err).magenta);
       });
       colorStream(stream, patternFunc(file));
     }

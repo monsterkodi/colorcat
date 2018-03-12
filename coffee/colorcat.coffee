@@ -6,12 +6,9 @@
  0000000   0000000   0000000   0000000   000   000   0000000  000   000     000   
 ###
 
-fs     = require 'fs'
-path   = require 'path'
-colors = require 'colors'
-noon   = require 'noon'
+{ colors, slash, noon, fs, _ } = require 'kxk'
+
 matchr = require './matchr'
-_      = require 'lodash'
 
 log    = console.log
 error  = (err) -> process.stderr.write "[ERROR] ".yellow + "#{err}\n".red
@@ -71,7 +68,7 @@ colorcat
     patternFile  . ? colorize with patterns in file . - P
     skipEmpty    . ? skip empty lines             . = false
     lineNumbers  . ? prepend output with line numbers . = false
-    ansi256      . ? use 256 colors ansi codes    . = false
+    ansi256      . ? use 256 colors ansi codes    . = true
     
 ansi256              
             ∘ use #{'ansi-256-colors'.gray.bold} instead of #{'colors'.gray.bold} module
@@ -231,9 +228,9 @@ patternFunc = (file) ->
     else if args.patternFile?
         patterns = loadSyntax args.patternFile
     else if args.ext?
-        patterns = loadSyntax path.join __dirname, '..', 'syntax', args.ext + '.noon'
+        patterns = loadSyntax slash.join __dirname, '..', 'syntax', args.ext + '.noon'
     else if file?
-        patterns = loadSyntax path.join __dirname, '..', 'syntax', path.extname(file).substr(1) + '.noon'
+        patterns = loadSyntax slash.join __dirname, '..', 'syntax', slash.ext(file) + '.noon'
     
     if not patterns?
         return (chunk) -> funkyBgrd dimText chunk
