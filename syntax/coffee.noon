@@ -15,7 +15,7 @@
 
 # keywords
 
-(^|\s)(if|else|then|for|of|in|while|do|unless|not|or|and|try|catch|return|break|continue|new|switch|when)(\s|$)  . w . mf . w
+(^|\s)(if|else|then|for|of|in|while|do|unless|not|or|and|try|catch|return|break|continue|new|switch|when|class)(\s|$)  . w . mf . w
 
 # require
 
@@ -23,7 +23,7 @@
 
 # class
 
-class                          yf
+^\s*class\s+(\w+)             . yf
 
 # globals
 
@@ -57,13 +57,16 @@ null|undefined                 m
 
 # functions
 
-(\w+)\s*=\s*\([^\)]*\)\s*->  . yf
-(\w+)\s*=\s*->               . yf
+(\w+)\s*=\s*\([^\)]*\)\s*->  . gf
+(\w+)\s*=\s*->               . gf
 (\()([^\(\)]*)(\)\s*)->      . bf . gf . bf
+
+(@)(\w+)                . dg . g
 
 # .property
 
 (\.\w+)                      . g
+
 
 # range
 
@@ -96,7 +99,7 @@ null|undefined                 m
 #number
 
 \b\d+\b                        m
-[^\s0].*(\b\d+\b)            . f
+# [^\s0].*(\b\d+\b)            . f
 (\b\d+\b).*[^\s0]            . f
 
 # comments
