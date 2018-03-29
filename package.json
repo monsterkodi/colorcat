@@ -17,6 +17,6 @@
   "license": "Unlicense",
   "dependencies": {
     "ansi-256-colors": "^1.1.0",
-    "kxk": "^0.40.0"
+    "kxk": "^0.71.0"
   }
 }
