@@ -6,7 +6,7 @@
  0000000   0000000   0000000   0000000   000   000   0000000  000   000     000   
 ###
 
-{ colors, slash, noon, fs, _ } = require 'kxk'
+{ karg, colors, slash, noon, fs, _ } = require 'kxk'
 
 matchr = require './matchr'
 
@@ -53,7 +53,7 @@ for c in _.keys bgrd
     ci = colors.white "    "+_.padEnd c,11 if c in ['bgBlack', 'bgBlue']
     bgrdColors += "    #{c}  . = false . - #{bgrd[c]} . ? #{colors.reset(colors[bg](ci))}\n"
         
-args = require('karg') """
+args = karg """
 
 colorcat
 
