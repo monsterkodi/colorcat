@@ -1,0 +1,112 @@
+
+#  000   000   0000000   00000000  00000000  00000000  00000000
+#  000  000   000   000  000       000       000       000     
+#  0000000    000   000  000000    000000    0000000   0000000 
+#  000  000   000   000  000       000       000       000     
+#  000   000   0000000   000       000       00000000  00000000
+
+!=                             x
+[\[\]<>+-=]                    x
+->                             bf
+
+# braces
+
+[\(\)\{\}]                     xf
+
+# keywords
+
+(^|\s)(if|else|then|for|of|in|while|do|unless|not|or|and|try|catch|return|break|continue|new|switch|when|class)(\s|$)  . w . mf . w
+
+# require
+
+(\w+)\s*(=)\s*(require)(\(?\s*')(\S+)('\s*\)?\s*)  . yf . xd . x . xd . rf . xd
+
+# class
+
+^\s*class\s+(\w+)             . yf
+
+# globals
+
+(\bconsole\.|\bprocess\.|\bglobal\.|\bmodule\.|\bexports\.|\bpath\.|\bfs\.|\bos\.)  . gdf
+
+# special
+
+\blog\b                        gf
+\berr\b                        r
+\berror\b                      rf
+
+# interpolation content
+
+\#\{([^\}\#]*)\}             . yf
+
+
+# strings
+
+(')([^']*)(')                . rfd . rf . rfd
+(")([^"]*)(")                . yf  . rf . yf
+"""                            rf
+
+# bool
+
+true                           g
+false                          r
+
+# null
+
+null|undefined                 m
+
+# functions
+
+(\w+)\s*=\s*\([^\)]*\)\s*->  . gf
+(\w+)\s*=\s*->               . gf
+(\()([^\(\)]*)(\)\s*)->      . bf . gf . bf
+
+(@)(\w+)                . dg . g
+
+# .property
+
+(\.\w+)                      . g
+
+
+# range
+
+(\[).*(\.\.\.).*(\])         . mdf . mf . mdf
+
+# array index
+
+\[(\d+)\]                    . mf
+
+# dictionary key
+
+(\S+)\s*(:)                  . fy . rfd
+
+# exists?
+
+\S+(\?)                      . mf
+
+# punctuation
+
+[\,\.]                         df
+
+# lodash
+
+(_)\.(\w+)                   . gf . gfd
+
+# interpolation markers
+
+(\#\{|\})                    . d
+
+#number
+
+\b\d+\b                        m
+# [^\s0].*(\b\d+\b)            . f
+(\b\d+\b).*[^\s0]            . f
+
+# comments
+
+|###|                          xd
+(#)([^\{].*|$)               . xd . x
+
+# salt header
+
+^[0\s]+$                       x
