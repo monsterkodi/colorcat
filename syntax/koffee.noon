@@ -15,7 +15,8 @@
 
 # keywords
 
-(^|\s)(if|else|then|for|of|in|while|do|unless|not|or|and|try|catch|return|break|continue|new|switch|when|class)(\s|$)  . w . mf . w
+(^|\s)(if|else|then|for|of|in|while|do|unless|not|or|and|try|catch|throw|return|break|continue|new|switch|when|class)(\s|$)  . w . mf . w
+(^|\s)(▸if|▸else|▸elif|▸then)(\s|$)  . w . mf . w
 
 # require
 
