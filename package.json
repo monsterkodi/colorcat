@@ -1,7 +1,11 @@
 {
   "name": "colorcat",
   "description": "loves colors",
-  "version": "1.2.0",
+  "version": "1.3.0",
+  "keywords": [
+    "color",
+    "cat"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/monsterkodi/colorcat"
@@ -17,6 +21,6 @@
   "license": "Unlicense",
   "dependencies": {
     "ansi-256-colors": "^1.1.0",
-    "kxk": "../kxk"
+    "kxk": "^0.277.0"
   }
 }
