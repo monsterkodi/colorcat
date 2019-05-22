@@ -1,6 +1,6 @@
 name          colorcat
 description   loves colors
-version       1.3.0
+version       1.4.0
 keywords
               color
               cat
@@ -16,4 +16,4 @@ author        monsterkodi
 license       Unlicense
 dependencies
               ansi-256-colors  ^1.1.0
-              kxk             ^0.277.0
+              kxk             ^0.288.0
