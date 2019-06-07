@@ -127,7 +127,7 @@ colorize = (str, stack) ->
                     str = s.substr(2)
                     spl = spl.filter (s) -> s.substr(0,2) != 's:'
                     break
-                
+
         for n in spl
             if kolor[n]?
                 str = kolor[n] str
@@ -145,19 +145,37 @@ colorize = (str, stack) ->
 
 regexes = []
 
-expand = (e) ->
-    clrlst = Object.assign text, bgrd
-    cnames = Object.keys(text).concat Object.keys(bgrd)
-    invert = {}
-    for k,v of clrlst then invert[v] = k
-    invert.f = 'bold'
-    invert.d = 'dim'
-    invert.k = 'keep'
+clrlst = Object.assign {}, bgrd
+clrlst = Object.assign clrlst, text
+fbgnms = kolor.FG_NAMES.concat kolor.BG_NAMES
+fbgcol = kolor.FG_COLORS.concat kolor.BG_COLORS
+cnames = Object.keys(text).concat Object.keys(bgrd)
+cnames = cnames.concat fbgnms
+invert = {}
+for k,v of clrlst then invert[v] = k
+invert.f = 'bold'
+invert.d = 'dim'
+invert.k = 'keep'
+invert.x = 'gray'
+invert.z = 'w2'
+invert.Z = 'W1'
 
+expand = (e) ->
+    
     expd = (c) ->
+        if c[0] in fbgcol
+            if c[0..1] in fbgnms
+                if c.length == 2 then return c
+                else                  return c[0..1] + '.' + expd c[2..]
+                
         if c?.split? and c not in cnames
-            s = c.split('s\:')
-            r = s[0].split('').map((a) -> invert[a]).join('.')
+            s = c.split 's\:'
+            if invert[s[0][0]]
+                if s[0].length == 1 then r = invert[s[0][0]]
+                else                     r = invert[s[0][0]] + '.' + expd s[0][1..]
+            else
+                # error 'dafuk?', c, s
+                r = ''
             r += '.s:' + s[1] if s.length > 1
             r
         else
@@ -216,6 +234,7 @@ patternFunc = ->
     if args.pattern?
         noon_parse = require 'noon/js/parse'
         patterns = expand noon_parse args.pattern
+        # log patterns
     else if args.patternFile?
         patterns = loadSyntax args.patternFile
     

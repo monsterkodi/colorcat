@@ -1,6 +1,6 @@
 name          colorcat
 description   loves colors
-version       2.2.0
+version       2.3.0
 keywords
               color
               cat
@@ -20,6 +20,6 @@ author        monsterkodi
 license       Unlicense
 dependencies
               karg    >=1.18.0
-              klor    >=0.54.0
+              klor    >=0.56.0
               kslash  >=1.10.0
               noon    >=2.10.0
