@@ -6,10 +6,12 @@
  0000000   0000000   0000000   0000000   000   000   0000000  000   000     000   
 ###
 
-▸profile 'klor' klor = require 'klor'
-▸profile 'karg' karg = require 'karg'
+# ▸start 'colorcat'
 
-kolor  = klor.kolor
+klor = require 'klor'
+karg = require 'karg'
+
+kolor = klor.kolor
 kolor.globalize()
 
 NEWLINE = /\r?\n/
@@ -26,26 +28,33 @@ rpad = (s, l) ->
     s
 
 text = 
-    red:     'r' 
-    green:   'g'
+    white:   'w'
+    cyan:    'c'
+    magenta: 'm'
     blue:    'b'
     yellow:  'y'
-    magenta: 'm'
-    cyan:    'c'
-    gray:    'x'
-    black:   'z'
-    white:   'w'
+    green:   'g'
+    red:     'r' 
         
 textColors = ''
-for c in Object.keys text
-    textColors += "    #{c}  . = false . - #{text[c]} . ? #{kolor[c] bold '██'}#{kolor[c] '██'}#{kolor[c] dim '██'} #{kolor[c](c) }\n"
+for c,s of text
+    # textColors += "    #{c}  . = false . - #{text[c]} . ? #{kolor[c] '██'}#{kolor[c] dim '██'} #{kolor[c](c) }\n"
+    
+    shorts = ''
+    switch s
+        when 'x''z' then
+        else
+            for i in [1..8]
+                shortf = s+i
+                shorts += kolor[shortf] ' ' + shortf + ' '
+    
+    textColors += "    #{c}  . = false . - #{text[c]} . ? #{kolor[c] '██'}#{kolor[c] dim '██'}#{shorts}\n"
 
 bgrd = 
-    bgBlack:   'Z'
     bgRed:     'R' 
     bgGreen:   'G'
-    bgBlue:    'B'
     bgYellow:  'Y'
+    bgBlue:    'B'
     bgMagenta: 'M'
     bgCyan:    'C'
     bgWhite:   'W'
@@ -59,18 +68,34 @@ bgfunc = (c) ->
     
 bgrdColors = ''
 for c,s of bgrd
-    ci = black "    " + rpad c,11
-    bgrdColors += "    #{c}  . = false . - #{bgrd[c]} . ? #{reset(kolor[bgfunc c](ci))}\n"
+    
+    shorts = ''
+    switch s
+        when 'W'
+            for i in [1..8]
+                shortb = 'W'+i
+                shortf = 'w'.toLowerCase()+(9-i)
+                shorts += kolor[shortf] kolor[shortb] ' ' + shortb + ' '
+            
+        when 'Z' then
+            
+        else
+            for i in [1..8]
+                shortb = s+i
+                shortf = s.toLowerCase()+(9-i)
+                shorts += kolor[shortf] kolor[shortb] ' ' + shortb + ' '
+    
+    bgrdColors += "    #{c}  . = false . - #{bgrd[c]} . ? #{reset(kolor[bgfunc c]("    "))}#{shorts}\n"
         
 args = karg """
 
 colorcat
 
     file         . ? the file(s) to display or stdin . **
-#{textColors}
-    fat          . ? #{bold white '▲▲     fat'}   . = false
+    fat          . ? #{  gray '     bold'}        . = false
     dim                                           . = false
-        ?           |#{dim white '    ▲▲ dim'} 
+        ?           |#{dim white '  ▼▼ dim'} 
+#{textColors}
 #{bgrdColors}
     ext          . ? use syntax highlighting for *.ext
     pattern      . ? colorize with pattern
@@ -83,8 +108,8 @@ version   #{require("#{__dirname}/../package.json").version}
 """
 
 if args.debug
-    noon = require 'noon'
-    log noon.stringify args, colors:true
+    noon_stringify = require 'noon/js/stringify'
+    log noon_stringify args, colors:true
     
 #  0000000   0000000   000       0000000   00000000   000  0000000  00000000
 # 000       000   000  000      000   000  000   000  000     000   000     
@@ -164,12 +189,12 @@ for c in Object.keys bgrd
         funkyBgrd = kolor[bgfunc c]
 
 if args.fat
-    fatText = (s) -> funkyText(s).bold
+    fatText = (s) -> bold funkyText s
 else
     fatText = funkyText
 
 if args.dim
-    dimText = (s) -> fatText(s).dim
+    dimText = (s) -> dim fatText s
 else
     dimText = fatText
 
@@ -181,26 +206,26 @@ else
 
 patternFunc = ->
     
-    ▸profile 'noon'   noon   = require 'noon'
-    ▸profile 'matchr' matchr = require './matchr'
-    
     loadSyntax = (f) ->
         fs = require 'fs'
         if fs.existsSync f
-            expand noon.load f 
+            noon_load = require 'noon/js/load'
+            expand noon_load f 
         else
             error "can't locate syntax file #{f}"
     
     if args.pattern?
-        patterns = expand noon.parse args.pattern
+        noon_parse = require 'noon/js/parse'
+        patterns = expand noon_parse args.pattern
     else if args.patternFile?
         patterns = loadSyntax args.patternFile
     
     if not patterns?
         return (chunk) -> funkyBgrd dimText chunk
         
+    matchr = require './matchr'
     matchrConfig = matchr.config patterns
-            
+          
     pattern = (chunk) ->
         chunk = kolor.strip chunk
         rngs = matchr.ranges matchrConfig, chunk
@@ -327,7 +352,7 @@ output = (rngs, number) ->
     
 if args.file.length
   
-    ▸profile 'slash' slash = require 'kslash'
+    slash = require 'kslash'
     
     for file in args.file    
 
@@ -349,3 +374,5 @@ else
         syntaxStream process.stdin, args.ext
     else    
         colorStream process.stdin, patternFunc()
+
+# process.on 'exit', (code) -> ▸end 'colorcat'
