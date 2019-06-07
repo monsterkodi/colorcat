@@ -38,7 +38,6 @@ text =
         
 textColors = ''
 for c,s of text
-    # textColors += "    #{c}  . = false . - #{text[c]} . ? #{kolor[c] '██'}#{kolor[c] dim '██'} #{kolor[c](c) }\n"
     
     shorts = ''
     switch s
@@ -48,7 +47,7 @@ for c,s of text
                 shortf = s+i
                 shorts += kolor[shortf] ' ' + shortf + ' '
     
-    textColors += "    #{c}  . = false . - #{text[c]} . ? #{kolor[c] '██'}#{kolor[c] dim '██'}#{shorts}\n"
+    textColors += "    #{c}  . = false . - #{text[c]} . ? #{kolor[c] '██'}#{dim kolor[c] '██'}#{shorts}\n"
 
 bgrd = 
     bgRed:     'R' 
