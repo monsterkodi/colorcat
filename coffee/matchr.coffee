@@ -6,8 +6,6 @@
 000   000  000   000     000      0000000  000   000  000   000
 ###
 
-_ = require 'lodash'
-
 ###
  0000000   0000000   000   000  00000000  000   0000000 
 000       000   000  0000  000  000       000  000      
@@ -66,9 +64,9 @@ ranges = (regexes, str) ->
                 gs = 0
                 for j in [0..match.length-2]
                     value = arg
-                    if _.isArray(value) and j < value.length then value = value[j]
-                    else if _.isObject(value) and j < _.size(value) 
-                        value = [_.keys(value)[j], value[_.keys(value)[j]]]
+                    if (value instanceof Array) and j < value.length then value = value[j]
+                    else if (value instanceof Object) and j < Object.keys(value).length
+                        value = [Object.keys(value)[j], value[Object.keys(value)[j]]]
                     gi = match[0].slice(gs).indexOf match[j+1]
                     rgs.push
                         start: match.index + i + gs + gi

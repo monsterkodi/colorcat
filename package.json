@@ -29,6 +29,7 @@
     "klor": "^0.52.0",
     "kslash": "^1.10.0",
     "lodash": "^4.17.11",
-    "noon": "^2.5.0"
+    "lodash.assign": "^4.2.0",
+    "lodash.invert": "^4.3.0"
   }
 }

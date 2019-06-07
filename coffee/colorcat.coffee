@@ -6,13 +6,8 @@
  0000000   0000000   0000000   0000000   000   000   0000000  000   000     000   
 ###
 
-_      = require 'lodash'
-fs     = require 'fs'
-noon   = require 'noon'
-klor   = require 'klor'
-karg   = require 'karg'
-slash  = require 'kslash'
-matchr = require './matchr'
+▸profile 'klor' klor = require 'klor'
+▸profile 'karg' karg = require 'karg'
 
 kolor  = klor.kolor
 kolor.globalize()
@@ -24,6 +19,11 @@ NEWLINE = /\r?\n/
 # 000000000  0000000    000  0000  0000000 
 # 000   000  000   000  000   000       000
 # 000   000  000   000   0000000   0000000 
+
+rpad = (s, l) ->
+    s = String s
+    while s.length < l then s += ' '
+    s
 
 text = 
     red:     'r' 
@@ -37,7 +37,7 @@ text =
     white:   'w'
         
 textColors = ''
-for c in _.keys text
+for c in Object.keys text
     textColors += "    #{c}  . = false . - #{text[c]} . ? #{kolor[c] bold '██'}#{kolor[c] '██'}#{kolor[c] dim '██'} #{kolor[c](c) }\n"
 
 bgrd = 
@@ -59,7 +59,7 @@ bgfunc = (c) ->
     
 bgrdColors = ''
 for c,s of bgrd
-    ci = black "    "+_.padEnd c,11
+    ci = black "    " + rpad c,11
     bgrdColors += "    #{c}  . = false . - #{bgrd[c]} . ? #{reset(kolor[bgfunc c](ci))}\n"
         
 args = karg """
@@ -85,7 +85,7 @@ version   #{require("#{__dirname}/../package.json").version}
 if args.debug
     noon = require 'noon'
     log noon.stringify args, colors:true
-
+    
 #  0000000   0000000   000       0000000   00000000   000  0000000  00000000
 # 000       000   000  000      000   000  000   000  000     000   000     
 # 000       000   000  000      000   000  0000000    000    000    0000000 
@@ -94,9 +94,8 @@ if args.debug
 
 colorize = (str, stack) ->
     try
-        spl = stack.map (s) -> 
-            String(s).split '.'
-        spl = _.flatten spl
+        spl = stack.map (s) -> String(s).split '.'
+        spl = spl.flat()
 
         if not ('keep' in spl)
             for s in spl
@@ -123,9 +122,10 @@ colorize = (str, stack) ->
 regexes = []
 
 expand = (e) ->
-    clrlst = _.assign text, bgrd
-    cnames = _.concat _.keys(text), _.keys(bgrd)
-    invert = _.invert clrlst
+    clrlst = Object.assign text, bgrd
+    cnames = Object.keys(text).concat Object.keys(bgrd)
+    invert = {}
+    for k,v of clrlst then invert[v] = k
     invert.f = 'bold'
     invert.d = 'dim'
     invert.k = 'keep'
@@ -140,7 +140,7 @@ expand = (e) ->
             c
     
     for pat,cls of e
-        if _.isArray cls
+        if cls instanceof Array
             e[pat] = cls.map (clr) -> expd clr.split('.')[0]
         else
             e[pat] = expd cls
@@ -155,10 +155,11 @@ expand = (e) ->
 funkyText = (s) -> s
 funkyBgrd = (s) -> s
 
-for c in _.keys text
+for c in Object.keys text
     if args[c]
         funkyText = kolor[c]
-for c in _.keys bgrd
+        
+for c in Object.keys bgrd
     if args[c]
         funkyBgrd = kolor[bgfunc c]
 
@@ -180,7 +181,11 @@ else
 
 patternFunc = ->
     
-    loadSyntax = (f) -> 
+    ▸profile 'noon'   noon   = require 'noon'
+    ▸profile 'matchr' matchr = require './matchr'
+    
+    loadSyntax = (f) ->
+        fs = require 'fs'
         if fs.existsSync f
             expand noon.load f 
         else
@@ -190,8 +195,6 @@ patternFunc = ->
         patterns = expand noon.parse args.pattern
     else if args.patternFile?
         patterns = loadSyntax args.patternFile
-    # else if args.ext?
-        # patterns = loadSyntax slash.join __dirname, '..', 'syntax', args.ext + '.noon'
     
     if not patterns?
         return (chunk) -> funkyBgrd dimText chunk
@@ -233,7 +236,7 @@ colorStream = (stream, pattern) ->
         if args.lineNumbers
             colorLines = colorLines.map (l) -> 
                 lineno += 1
-                return gray(dim _.padEnd("#{lineno}",6)) + l
+                return gray(dim rpad("#{lineno}",6)) + l
                 
         log colorLines.join '\n'
         
@@ -296,12 +299,7 @@ kolorize = (chunk) ->
 #  0000000    0000000      000     000         0000000      000     
 
 output = (rngs, number) ->
-    
-    rpad = (s, l) ->
-        s = String s
-        while s.length < l then s += ' '
-        s
-    
+        
     clrzd = ''
     
     if args.lineNumbers
@@ -329,6 +327,8 @@ output = (rngs, number) ->
     
 if args.file.length
   
+    ▸profile 'slash' slash = require 'kslash'
+    
     for file in args.file    
 
         text  = slash.readText file
