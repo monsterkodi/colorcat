@@ -1,10 +1,15 @@
 {
   "name": "colorcat",
   "description": "loves colors",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "keywords": [
     "color",
     "cat"
+  ],
+  "files": [
+    "bin/colorcat",
+    "syntax/*",
+    "js/*"
   ],
   "repository": {
     "type": "git",
@@ -20,7 +25,10 @@
   "author": "monsterkodi",
   "license": "Unlicense",
   "dependencies": {
-    "ansi-256-colors": "^1.1.0",
-    "kxk": "^0.288.0"
+    "karg": "^1.13.0",
+    "klor": "^0.52.0",
+    "kslash": "^1.10.0",
+    "lodash": "^4.17.11",
+    "noon": "^2.5.0"
   }
 }

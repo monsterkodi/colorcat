@@ -6,7 +6,7 @@
 
 \S+                            white
 
-[\<\>\+\-\=\/\*]               white.dim
+[\<\>\+\-\=\/\*\|]             white.dim
 
 # braces
 
@@ -20,13 +20,37 @@ false                          red
 \`                             yellow
 
 ^[\w\-]+                       yellow
-\s(\-)(\w+)                  . magenta.dim . magenta
+# \s(\-)(\w+)                  . magenta.dim . magenta
 
 # punctuation
 
 [\,\.\:\;\#\$\^\?\|\~]         gray.dim
 
-\b(if|elif|fi|then|else|echo|exit|while|case|esac|done|do|in|set)\b  blue.fat
+# (?:^\s*|\/)(\.[\-\_\w][\.\-\_\w]*)(?:\s|$)  dotfile
+([^\/\s\.]+)(\.[ck]offee)            . yellow  . dim
+([^\/\s\.]+)(\.noon)                 . green   . dim
+([^\/\s\.]+)(\.json)                 . magenta . dim
+([^\/\s\.]+)(\.styl)                 . blue    . dim
+([^\/\s\.]+)(\.html)                 . magenta . dim
+([^\/\s\.]+)(\.pug)                  . blue    . dim
+([^\/\s\.]+)(\.css)                  . magenta . dim
+([^\/\s\.]+)(\.cp?p?)                . yellow  . dim
+([^\/\s\.]+)(\.hp?p?)                . red     . dim
+([^\/\s\.]+)(\.js.map)               . gray    . dim
+([^\/\s\.]+)(\.js)                   . magenta . dim
+([^\/\s\.]+)(\.py)                   . green   . dim
+([^\/\s\.]+)(\.sh)                   . red     . dim
+([^\/\s\.]+)(\.md)                   . white   . dim
+([^\/\s\.]+)(\.txt)                  . white   . dim
+([^\/\s\.]+)(\.png|\.jpg|\.gif)      . cyan    . dim
+([^\/\s\.]+)(\.pxm|\.tiff?|\.icns)   . cyan    . dim
+
+# ([^\/]+)(?:\/)    dir
+
+[~]                                ext
+[\/\:]                             separator
+
+\b(if|elif|fi|then|else|echo|head|tail|exit|while|case|esac|done|do|in|set)\b  blue.fat
 
 
 #number
@@ -41,8 +65,8 @@ false                          red
 
 # strings
 
-(')([^'\\]*)(')    . red.dim . red.fat . red.dim
-(")([^"\\]*)(")    . red.dim . red.fat . red.dim
+(')([^']*)(')    . red.dim . red.fat . red.dim
+(")([^"]*)(")    . red.dim . red.fat . red.dim
 
 # comments
 

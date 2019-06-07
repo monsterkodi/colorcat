@@ -23,5 +23,3 @@ Contains syntax highlighting patterns for
 A side by side comparison of my atom and colorcat highlighting for coffeescript:
 
 ![atomcat](img/atomcat.png)
-
-#### warning: colors might make you [happier](http://goingmental.org/colors.htm) :)

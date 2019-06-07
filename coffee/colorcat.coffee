@@ -6,20 +6,24 @@
  0000000   0000000   0000000   0000000   000   000   0000000  000   000     000   
 ###
 
-{ karg, colors, slash, noon, fs, _ } = require 'kxk'
-
+_      = require 'lodash'
+fs     = require 'fs'
+noon   = require 'noon'
+klor   = require 'klor'
+karg   = require 'karg'
+slash  = require 'kslash'
 matchr = require './matchr'
 
-log    = console.log
-error  = (err) -> process.stderr.write "[ERROR] ".yellow + "#{err}\n".red
+kolor  = klor.kolor
+kolor.globalize()
 
-###
- 0000000   00000000    0000000    0000000
-000   000  000   000  000        000     
-000000000  0000000    000  0000  0000000 
-000   000  000   000  000   000       000
-000   000  000   000   0000000   0000000 
-###
+NEWLINE = /\r?\n/
+
+#  0000000   00000000    0000000    0000000
+# 000   000  000   000  000        000     
+# 000000000  0000000    000  0000  0000000 
+# 000   000  000   000  000   000       000
+# 000   000  000   000   0000000   0000000 
 
 text = 
     red:     'r' 
@@ -34,7 +38,7 @@ text =
         
 textColors = ''
 for c in _.keys text
-    textColors += "    #{c}  . = false . - #{text[c]} . ? #{colors[c].bold '██'}#{colors[c] '██'}#{colors[c].dim '██'} #{colors[c](c) }\n"
+    textColors += "    #{c}  . = false . - #{text[c]} . ? #{kolor[c] bold '██'}#{kolor[c] '██'}#{kolor[c] dim '██'} #{kolor[c](c) }\n"
 
 bgrd = 
     bgBlack:   'Z'
@@ -46,12 +50,17 @@ bgrd =
     bgCyan:    'C'
     bgWhite:   'W'
     
+bgfunc = (c) ->
+    s = bgrd[c]
+    switch s
+        when 'Z' then 'W2'
+        when 'W' then 'W4'
+        else s+4
+    
 bgrdColors = ''
-for c in _.keys bgrd
-    bg = 'bg'+c.substr(2)
-    ci = colors.black "    "+_.padEnd c,11
-    ci = colors.white "    "+_.padEnd c,11 if c in ['bgBlack', 'bgBlue']
-    bgrdColors += "    #{c}  . = false . - #{bgrd[c]} . ? #{colors.reset(colors[bg](ci))}\n"
+for c,s of bgrd
+    ci = black "    "+_.padEnd c,11
+    bgrdColors += "    #{c}  . = false . - #{bgrd[c]} . ? #{reset(kolor[bgfunc c](ci))}\n"
         
 args = karg """
 
@@ -59,62 +68,29 @@ colorcat
 
     file         . ? the file(s) to display or stdin . **
 #{textColors}
-    fat          . ? #{'▲▲     fat'.bold.white}   . = false
+    fat          . ? #{bold white '▲▲     fat'}   . = false
     dim                                           . = false
-        ?           |#{'    ▲▲ dim'.dim.white} 
+        ?           |#{dim white '    ▲▲ dim'} 
 #{bgrdColors}
     ext          . ? use syntax highlighting for *.ext
     pattern      . ? colorize with pattern
-    patternFile  . ? colorize with patterns in file . - P
-    skipEmpty    . ? skip empty lines             . = false
-    lineNumbers  . ? prepend output with line numbers . = false
-    ansi256      . ? use 256 colors ansi codes    . = true
-    
-ansi256              
-            ∘ use #{'ansi-256-colors'.gray.bold} instead of #{'colors'.gray.bold} module
-            ∘ colors don't get stripped when piping
+    patternFile  . ? colorize with patterns in file   . - P
+    skipEmpty    . ? skip empty lines                       . = false
+    lineNumbers  . ? prepend output with line numbers       . = false
+    debug                                             . - X . = false
     
 version   #{require("#{__dirname}/../package.json").version}
 """
 
-###
- 0000000   000   000   0000000  000
-000   000  0000  000  000       000
-000000000  000 0 000  0000000   000
-000   000  000  0000       000  000
-000   000  000   000  0000000   000
-###
+if args.debug
+    noon = require 'noon'
+    log noon.stringify args, colors:true
 
-ansi = require './colors'
-amap = null
-if args.ansi256
-    amap = 
-        red:       [ansi.r2, ansi.r4, ansi.r5]
-        green:     [ansi.g2, ansi.g4, ansi.g5]
-        blue:      [ansi.b2, ansi.b6, ansi.b7]
-        yellow:    [ansi.y2, ansi.y5, ansi.y6]
-        magenta:   [ansi.m1, ansi.m2, ansi.m4]
-        cyan:      [ansi.c1, ansi.c2, ansi.c4]
-        black:     [ansi.w1, ansi.w1, ansi.w2]
-        gray:      [ansi.w2, ansi.w4, ansi.w5]
-        white:     [ansi.w6, ansi.w7, ansi.w8]
-        bgRed:     [ansi.R4, ansi.R4, ansi.R4]
-        bgGreen:   [ansi.G4, ansi.G4, ansi.G4]
-        bgBlue:    [ansi.B6, ansi.B6, ansi.B6]
-        bgYellow:  [ansi.Y5, ansi.Y5, ansi.Y5]
-        bgMagenta: [ansi.M2, ansi.M2, ansi.M2]
-        bgCyan:    [ansi.C2, ansi.C2, ansi.C2]
-        bgBlack:   [ansi.W1, ansi.W1, ansi.W1]
-        bgGray:    [ansi.W4, ansi.W4, ansi.W4]
-        bgWhite:   [ansi.W7, ansi.W7, ansi.W7]
-
-###
- 0000000   0000000   000       0000000   00000000   000  0000000  00000000
-000       000   000  000      000   000  000   000  000     000   000     
-000       000   000  000      000   000  0000000    000    000    0000000 
-000       000   000  000      000   000  000   000  000   000     000     
- 0000000   0000000   0000000   0000000   000   000  000  0000000  00000000
-###
+#  0000000   0000000   000       0000000   00000000   000  0000000  00000000
+# 000       000   000  000      000   000  000   000  000     000   000     
+# 000       000   000  000      000   000  0000000    000    000    0000000 
+# 000       000   000  000      000   000  000   000  000   000     000     
+#  0000000   0000000   0000000   0000000   000   000  000  0000000  00000000
 
 colorize = (str, stack) ->
     try
@@ -129,33 +105,20 @@ colorize = (str, stack) ->
                     spl = spl.filter (s) -> s.substr(0,2) != 's:'
                     break
                 
-        if args.ansi256
-        
-            i = 1
-            i = 2 if 'bold' in spl
-            i = 0 if 'dim'  in spl
-            for n in spl
-                if amap[n]?
-                    str = amap[n][i] + str
-            str  = ansi.bold + str if 'bold' in spl
-            str += ansi.reset
-            
-        else
-            
-            for n in spl
-                if colors[n]?
-                    str = colors[n] str
+        for n in spl
+            if kolor[n]?
+                str = kolor[n] str
+            else if kolor[bgfunc n]?
+                str = kolor[bgfunc n] str
     catch err
         error err
     str
 
-###
-00000000  000   000  00000000    0000000   000   000  0000000  
-000        000 000   000   000  000   000  0000  000  000   000
-0000000     00000    00000000   000000000  000 0 000  000   000
-000        000 000   000        000   000  000  0000  000   000
-00000000  000   000  000        000   000  000   000  0000000  
-###
+# 00000000  000   000  00000000    0000000   000   000  0000000  
+# 000        000 000   000   000  000   000  0000  000  000   000
+# 0000000     00000    00000000   000000000  000 0 000  000   000
+# 000        000 000   000        000   000  000  0000  000   000
+# 00000000  000   000  000        000   000  000   000  0000000  
 
 regexes = []
 
@@ -183,23 +146,21 @@ expand = (e) ->
             e[pat] = expd cls
     e 
 
-###
-00000000  000   000  000   000  000   000  000   000
-000       000   000  0000  000  000  000    000 000 
-000000    000   000  000 0 000  0000000      00000  
-000       000   000  000  0000  000  000      000   
-000        0000000   000   000  000   000     000   
-###
+# 00000000  000   000  000   000  000   000  000   000
+# 000       000   000  0000  000  000  000    000 000 
+# 000000    000   000  000 0 000  0000000      00000  
+# 000       000   000  000  0000  000  000      000   
+# 000        0000000   000   000  000   000     000   
 
 funkyText = (s) -> s
 funkyBgrd = (s) -> s
 
 for c in _.keys text
     if args[c]
-        funkyText = colors[c]
+        funkyText = kolor[c]
 for c in _.keys bgrd
     if args[c]
-        funkyBgrd = colors['bg'+c.substr(2)]
+        funkyBgrd = kolor[bgfunc c]
 
 if args.fat
     fatText = (s) -> funkyText(s).bold
@@ -211,26 +172,26 @@ if args.dim
 else
     dimText = fatText
 
-###
-00000000    0000000   000000000  000000000  00000000  00000000   000   000   0000000
-000   000  000   000     000        000     000       000   000  0000  000  000     
-00000000   000000000     000        000     0000000   0000000    000 0 000  0000000 
-000        000   000     000        000     000       000   000  000  0000       000
-000        000   000     000        000     00000000  000   000  000   000  0000000 
-###
+# 00000000    0000000   000000000  000000000  00000000  00000000   000   000   0000000
+# 000   000  000   000     000        000     000       000   000  0000  000  000     
+# 00000000   000000000     000        000     0000000   0000000    000 0 000  0000000 
+# 000        000   000     000        000     000       000   000  000  0000       000
+# 000        000   000     000        000     00000000  000   000  000   000  0000000 
 
-patternFunc = (file) ->
+patternFunc = ->
     
-    loadSyntax = (f) -> expand noon.load f if fs.existsSync f
+    loadSyntax = (f) -> 
+        if fs.existsSync f
+            expand noon.load f 
+        else
+            error "can't locate syntax file #{f}"
     
     if args.pattern?
         patterns = expand noon.parse args.pattern
     else if args.patternFile?
         patterns = loadSyntax args.patternFile
-    else if args.ext?
-        patterns = loadSyntax slash.join __dirname, '..', 'syntax', args.ext + '.noon'
-    else if file?
-        patterns = loadSyntax slash.join __dirname, '..', 'syntax', slash.ext(file) + '.noon'
+    # else if args.ext?
+        # patterns = loadSyntax slash.join __dirname, '..', 'syntax', args.ext + '.noon'
     
     if not patterns?
         return (chunk) -> funkyBgrd dimText chunk
@@ -238,7 +199,7 @@ patternFunc = (file) ->
     matchrConfig = matchr.config patterns
             
     pattern = (chunk) ->
-        chunk = ansi.strip chunk
+        chunk = kolor.strip chunk
         rngs = matchr.ranges matchrConfig, chunk
         diss = matchr.dissect rngs
         
@@ -251,47 +212,140 @@ patternFunc = (file) ->
         
     return pattern
 
-###
- 0000000  000000000  00000000   00000000   0000000   00     00
-000          000     000   000  000       000   000  000   000
-0000000      000     0000000    0000000   000000000  000000000
-     000     000     000   000  000       000   000  000 0 000
-0000000      000     000   000  00000000  000   000  000   000
-###
+#  0000000  000000000  00000000   00000000   0000000   00     00
+# 000          000     000   000  000       000   000  000   000
+# 0000000      000     0000000    0000000   000000000  000000000
+#      000     000     000   000  000       000   000  000 0 000
+# 0000000      000     000   000  00000000  000   000  000   000
 
 colorStream = (stream, pattern) ->
+    
     lineno = 0
     stream.on 'data', (chunk) ->
+        
         lines = chunk.split '\n'
         colorLines = lines.map (l) -> pattern l
+        
         if args.skipEmpty
             colorLines = colorLines.filter (l) -> 
-                if args.ansi256
-                    ansi.strip(l).length > 0
-                else
-                    colors.strip(l).length > 0
+                kolor.strip(l).length > 0
+                
         if args.lineNumbers
             colorLines = colorLines.map (l) -> 
                 lineno += 1
-                return _.padEnd("#{lineno}",6).gray.dim + l
+                return gray(dim _.padEnd("#{lineno}",6)) + l
+                
         log colorLines.join '\n'
+        
+syntaxStream = (stream, ext) ->
 
-###
- 0000000   0000000   000000000      000  00000000  000  000      00000000
-000       000   000     000        000   000       000  000      000     
-000       000000000     000       000    000000    000  000      0000000 
-000       000   000     000      000     000       000  000      000     
- 0000000  000   000     000     000      000       000  0000000  00000000
-###
-
-if args.file.length
+    lineno = 0
+    stream.on 'data', (chunk) ->
+        
+        lines = chunk.split '\n'
+        colorLines = []
+        
+        rngs = klor.dissect lines, ext
+        for index in [0...lines.length]
+            colorLines.push output rngs[index], index+1, []
+        
+        if args.skipEmpty
+            colorLines = colorLines.filter (l) -> 
+                kolor.strip(l).length > 0
+                
+        log colorLines.join '\n'
     
-    for file in args.file
-        stream = fs.createReadStream file, encoding: 'utf8'
-        stream.on 'error', (err) -> error " can't read file '#{file}': " + String(err).magenta
-        colorStream stream, patternFunc file
+# 000   000   0000000   000       0000000   00000000   000  0000000  00000000  
+# 000  000   000   000  000      000   000  000   000  000     000   000       
+# 0000000    000   000  000      000   000  0000000    000    000    0000000   
+# 000  000   000   000  000      000   000  000   000  000   000     000       
+# 000   000   0000000   0000000   0000000   000   000  000  0000000  00000000  
+
+LI = /(\sli\d\s|\sh\d\s)/
+
+kolorize = (chunk) -> 
+    
+    if cn = kolor.map[chunk.value]
+        if cn instanceof Array
+            v = chunk.match
+            for cr in cn
+                v = kolor[cr] v
+            return v
+        else
+            return kolor[cn] chunk.match
             
+    if chunk.value.endsWith 'file'
+        w8 chunk.match
+    else if chunk.value.endsWith 'ext'
+        w3 chunk.match
+    else if chunk.value.startsWith 'punct'
+        if LI.test chunk.value
+            colorize match:chunk.match, value:chunk.value.replace LI, ' '
+        else
+            w2 chunk.match
+    else
+        if LI.test chunk.value
+            colorize match:chunk.match, value:chunk.value.replace LI, ' '
+        else
+            chunk.match
+
+#  0000000   000   000  000000000  00000000   000   000  000000000  
+# 000   000  000   000     000     000   000  000   000     000     
+# 000   000  000   000     000     00000000   000   000     000     
+# 000   000  000   000     000     000        000   000     000     
+#  0000000    0000000      000     000         0000000      000     
+
+output = (rngs, number) ->
+    
+    rpad = (s, l) ->
+        s = String s
+        while s.length < l then s += ' '
+        s
+    
+    clrzd = ''
+    
+    if args.lineNumbers
+        numstr = String number
+        clrzd += w2(numstr) + rpad '', 4-numstr.length
+        
+    c = 0
+
+    for i in [0...rngs.length]
+        while c < rngs[i].start 
+            clrzd += ' '
+            c++
+        clrzd += kolorize rngs[i]
+        c += rngs[i].length
+        
+    clrzd
+
+###
+ 0000000   0000000   000000000    
+000       000   000     000       
+000       000000000     000       
+000       000   000     000       
+ 0000000  000   000     000       
+###
+    
+if args.file.length
+  
+    for file in args.file    
+
+        text  = slash.readText file
+        lines = text.split NEWLINE
+        rngs  = klor.dissect lines, slash.ext file
+        
+        for index in [0...lines.length]
+            line = lines[index]
+            if line.startsWith '//# sourceMappingURL'
+                continue
+            log output rngs[index], index+1, []
+                
 else
     
     process.stdin.setEncoding 'utf8'
-    colorStream process.stdin, patternFunc()
+    
+    if args.ext and args.ext in klor.exts
+        syntaxStream process.stdin, args.ext
+    else    
+        colorStream process.stdin, patternFunc()
