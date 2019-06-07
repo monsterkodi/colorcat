@@ -1,7 +1,7 @@
 
 ![colorcat](img/colorcat.png)
 
-colorcat wants to colorize your console experience in two ways:
+colorcat wants to add colors to your console experience in two ways:
 
 - colorize piped output of other shell commands
 - syntax highlighting of files
