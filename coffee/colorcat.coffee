@@ -326,12 +326,12 @@ kolorize = (chunk) ->
         w3 chunk.match
     else if chunk.value.startsWith 'punct'
         if LI.test chunk.value
-            colorize match:chunk.match, value:chunk.value.replace LI, ' '
+            kolorize match:chunk.match, value:chunk.value.replace LI, ' '
         else
             w2 chunk.match
     else
         if LI.test chunk.value
-            colorize match:chunk.match, value:chunk.value.replace LI, ' '
+            kolorize match:chunk.match, value:chunk.value.replace LI, ' '
         else
             chunk.match
 
