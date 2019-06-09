@@ -91,9 +91,8 @@ args = karg """
 colorcat
 
     file         . ? the file(s) to display or stdin . **
-    fat          . ? #{  gray '     bold'}        . = false
-    dim                                           . = false
-        ?           |#{dim white '  ▼▼ dim'} 
+    fat          . ? #{  gray '     bold' }          . = false
+    dim          . ? #{ dim white '  ▼▼ dim' }       . = false
 #{textColors}
 #{bgrdColors}
     ext          . ? use syntax highlighting for *.ext
