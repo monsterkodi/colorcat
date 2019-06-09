@@ -293,7 +293,7 @@ syntaxStream = (stream, ext) ->
         
         rngs = klor.dissect lines, ext
         for index in [0...lines.length]
-            colorLines.push output rngs[index], index+1, []
+            colorLines.push klor.kolorizeChunks chunks:rngs[index], number:args.lineNumbers and index+1
         
         if args.skipEmpty
             colorLines = colorLines.filter (l) -> 
