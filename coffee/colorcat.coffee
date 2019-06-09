@@ -301,65 +301,6 @@ syntaxStream = (stream, ext) ->
                 
         log colorLines.join '\n'
     
-# 000   000   0000000   000       0000000   00000000   000  0000000  00000000  
-# 000  000   000   000  000      000   000  000   000  000     000   000       
-# 0000000    000   000  000      000   000  0000000    000    000    0000000   
-# 000  000   000   000  000      000   000  000   000  000   000     000       
-# 000   000   0000000   0000000   0000000   000   000  000  0000000  00000000  
-
-LI = /(\sli\d\s|\sh\d\s)/
-
-kolorize = (chunk) -> 
-    
-    if cn = kolor.map[chunk.value]
-        if cn instanceof Array
-            v = chunk.match
-            for cr in cn
-                v = kolor[cr] v
-            return v
-        else
-            return kolor[cn] chunk.match
-            
-    if chunk.value.endsWith 'file'
-        w8 chunk.match
-    else if chunk.value.endsWith 'ext'
-        w3 chunk.match
-    else if chunk.value.startsWith 'punct'
-        if LI.test chunk.value
-            kolorize match:chunk.match, value:chunk.value.replace LI, ' '
-        else
-            w2 chunk.match
-    else
-        if LI.test chunk.value
-            kolorize match:chunk.match, value:chunk.value.replace LI, ' '
-        else
-            chunk.match
-
-#  0000000   000   000  000000000  00000000   000   000  000000000  
-# 000   000  000   000     000     000   000  000   000     000     
-# 000   000  000   000     000     00000000   000   000     000     
-# 000   000  000   000     000     000        000   000     000     
-#  0000000    0000000      000     000         0000000      000     
-
-output = (rngs, number) ->
-        
-    clrzd = ''
-    
-    if args.lineNumbers
-        numstr = String number
-        clrzd += w2(numstr) + rpad '', 4-numstr.length
-        
-    c = 0
-
-    for i in [0...rngs.length]
-        while c < rngs[i].start 
-            clrzd += ' '
-            c++
-        clrzd += kolorize rngs[i]
-        c += rngs[i].length
-        
-    clrzd
-
 ###
  0000000   0000000   000000000    
 000       000   000     000       
@@ -374,15 +315,9 @@ if args.file.length
     
     for file in args.file    
 
-        text  = slash.readText file
-        lines = text.split NEWLINE
-        rngs  = klor.dissect lines, slash.ext file
-        
-        for index in [0...lines.length]
-            line = lines[index]
-            if line.startsWith '//# sourceMappingURL'
-                continue
-            log output rngs[index], index+1, []
+        text = slash.readText file
+  
+        log klor.syntax text:text, ext:slash.ext(file), numbers:args.lineNumbers
                 
 else
     
