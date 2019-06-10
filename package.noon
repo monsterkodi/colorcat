@@ -1,6 +1,8 @@
 name          colorcat
 description   loves colors
-version       2.10.0
+version       2.11.0
+bin
+              colorcat  ./bin/colorcat
 keywords
               color
               cat
@@ -13,8 +15,7 @@ repository
               url   https://github.com/monsterkodi/colorcat
 bugs
               url  https://github.com/monsterkodi/colorcat/issues
-bin
-              colorcat  ./bin/colorcat
+homepage      https://npmjs.com/package/colorcat
 preferGlobal  true
 author        monsterkodi
 license       Unlicense
