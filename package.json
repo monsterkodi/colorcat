@@ -27,8 +27,8 @@
   "license": "Unlicense",
   "dependencies": {
     "karg": "^1.19.0",
-    "klor": "^1.1.1",
+    "klor": "^1.2.0",
     "kslash": "^1.12.0",
-    "noon": "^2.13.0"
+    "noon": "^2.14.1"
   }
 }
