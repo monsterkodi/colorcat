@@ -1,6 +1,6 @@
 name          colorcat
 description   loves colors
-version       2.12.0
+version       2.13.0
 bin
               colorcat  ./bin/colorcat
 keywords

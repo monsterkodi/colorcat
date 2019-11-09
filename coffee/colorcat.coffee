@@ -264,11 +264,16 @@ patternFunc = ->
 # 0000000      000     000   000  00000000  000   000  000   000
 
 colorStream = (stream, pattern) ->
-    
+
     lineno = 0
-    stream.on 'data', (chunk) ->
+    buffer = ''
+    stream.on 'data' (chunk) ->
         
-        lines = chunk.split '\n'
+        if not chunk.endsWith '\n'
+            buffer += chunk
+            return
+            
+        lines = (buffer+chunk).split '\n'
         colorLines = lines.map (l) -> pattern l
         
         if args.skipEmpty
@@ -281,13 +286,19 @@ colorStream = (stream, pattern) ->
                 return gray(dim rpad("#{lineno}",6)) + l
                 
         log colorLines.join '\n'
+        buffer = ''
         
 syntaxStream = (stream, ext) ->
 
     lineno = 0
-    stream.on 'data', (chunk) ->
+    buffer = ''
+    stream.on 'data' (chunk) ->
         
-        lines = chunk.split '\n'
+        if not chunk.endsWith '\n'
+            buffer += chunk
+            return
+        
+        lines = (buffer+chunk).split '\n'
         colorLines = []
         
         rngs = klor.dissect lines, ext
@@ -299,6 +310,7 @@ syntaxStream = (stream, ext) ->
                 kolor.strip(l).length > 0
                 
         log colorLines.join '\n'
+        buffer = ''
     
 ###
  0000000   0000000   000000000    
