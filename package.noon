@@ -20,7 +20,7 @@ preferGlobal  true
 author        monsterkodi
 license       Unlicense
 dependencies
-              karg    ^1.19.0
-              klor    ^1.4.0
-              kslash  ^1.16.0
-              noon    ^3.0.0
+              karg    ^1.23.0
+              klor    ^2.16.1
+              kslash  ^2.3.0
+              noon    ^3.1.0
