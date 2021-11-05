@@ -31,11 +31,8 @@ Contains syntax highlighting patterns for
 
 [![npm package][npm-image]][npm-url] 
 [![downloads][downloads-image]][downloads-url] 
-[![Dependencies Status][david-image]][david-url]
 
 [npm-image]:https://img.shields.io/npm/v/colorcat.svg
 [npm-url]:http://npmjs.org/package/colorcat
-[david-image]:https://david-dm.org/monsterkodi/colorcat/status.svg
-[david-url]:https://david-dm.org/monsterkodi/colorcat
 [downloads-image]:https://img.shields.io/npm/dm/colorcat.svg
 [downloads-url]:https://www.npmtrends.com/colorcat
