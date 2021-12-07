@@ -1,7 +1,7 @@
 {
   "name": "colorcat",
   "description": "loves colors",
-  "version": "2.13.0",
+  "version": "2.14.0",
   "bin": {
     "colorcat": "./bin/colorcat"
   },
@@ -26,9 +26,9 @@
   "author": "monsterkodi",
   "license": "Unlicense",
   "dependencies": {
-    "karg": "^1.26.0",
-    "klor": "^2.16.1",
-    "kslash": "^2.4.0",
-    "noon": "^3.1.0"
+    "karg": "monsterkodi/karg",
+    "klor": "monsterkodi/klor",
+    "kslash": "monsterkodi/kslash",
+    "noon": "monsterkodi/noon"
   }
 }
