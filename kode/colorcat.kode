@@ -6,8 +6,6 @@
  0000000   0000000   0000000   0000000   000   000   0000000  000   000     000   
 ###
 
-# ▸start 'colorcat'
-
 klor = require 'klor'
 karg = require 'karg'
 
@@ -47,7 +45,7 @@ for c,s of text
                 shortf = s+i
                 shorts += kolor[shortf] ' ' + shortf + ' '
     
-    textColors += "    #{c}  . = false . - #{text[c]} . ? #{kolor[c] '██'}#{dim kolor[c] '██'}#{shorts}\n"
+    textColors += "    #{c}  . ? #{kolor[c] '██'}#{dim kolor[c] '██'}#{shorts} . = false . - #{text[c]}\n"
 
 bgrd = 
     bgRed:     'R' 
@@ -84,23 +82,21 @@ for c,s of bgrd
                 shortf = s.toLowerCase()+(9-i)
                 shorts += kolor[shortf] kolor[shortb] ' ' + shortb + ' '
     
-    bgrdColors += "    #{c}  . = false . - #{bgrd[c]} . ? #{reset(kolor[bgfunc c]("    "))}#{shorts}\n"
-        
+    bgrdColors += "    #{c}  . ? #{reset(kolor[bgfunc c]("    "))}#{shorts} . = false . - #{bgrd[c]}\n"
+
 args = karg """
-
 colorcat
-
-    file         . ? the file(s) to display or stdin . **
-    fat          . ? #{  gray '     bold' }          . = false
-    dim          . ? #{ dim white '  ▼▼ dim' }       . = false
+    file         the file(s) to display or stdin    **
+    fat          . ? #{ gray 'bold                                ' }      . = false  
+    dim          . ? #{ dim white '  ▼▼ dim                            ' } . = false
 #{textColors}
 #{bgrdColors}
-    ext          . ? use syntax highlighting for *.ext
-    pattern      . ? colorize with pattern
-    patternFile  . ? colorize with patterns in file   . - P
-    skipEmpty    . ? skip empty lines                       . = false
-    lineNumbers  . ? prepend output with line numbers       . = false
-    debug                                             . - X . = false
+    ext          use syntax highlighting for *.ext        
+    pattern      colorize with pattern
+    patternFile  colorize with patterns in file     -P
+    skipEmpty    skip empty lines                   = false
+    lineNumbers  prepend output with line numbers   = false
+    debug                                           = false -X
     
 version   #{require("#{__dirname}/../package.json").version}
 """

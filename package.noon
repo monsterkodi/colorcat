@@ -1,26 +1,25 @@
-name          colorcat
-description   loves colors
-version       2.14.0
-bin
-              colorcat  ./bin/colorcat
+name            colorcat
+description     loves colors
+version         2.15.0
+author          monsterkodi
+license         Unlicense
+preferGlobal    true
 keywords
-              color
-              cat
+                color
+                cat
+bin
+                colorcat  ./bin/colorcat
 files
-              bin/colorcat
-              syntax/*
-              js/*
-repository
-              type  git
-              url   https://github.com/monsterkodi/colorcat
-bugs
-              url  https://github.com/monsterkodi/colorcat/issues
-homepage      https://npmjs.com/package/colorcat
-preferGlobal  true
-author        monsterkodi
-license       Unlicense
+                bin/colorcat
+                syntax/*
+                js/*
+scripts
+                build  ./node_modules/.bin/kode -Ho js kode/*.kode
+repository      github:monsterkodi/colorcat
 dependencies
-              karg    monsterkodi/karg
-              klor    monsterkodi/klor
-              kslash  monsterkodi/kslash
-              noon    monsterkodi/noon
+                karg    monsterkodi/karg
+                klor    monsterkodi/klor
+                kslash  monsterkodi/kslash
+                noon    monsterkodi/noon
+devDependencies
+                kode  github:monsterkodi/kode
