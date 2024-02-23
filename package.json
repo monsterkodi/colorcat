@@ -1,7 +1,7 @@
 {
   "name": "colorcat",
   "description": "loves colors",
-  "version": "2.15.0",
+  "version": "2.16.0",
   "author": "monsterkodi",
   "license": "Unlicense",
   "preferGlobal": true,
@@ -22,10 +22,10 @@
   },
   "repository": "github:monsterkodi/colorcat",
   "dependencies": {
-    "karg": "monsterkodi/karg",
-    "klor": "monsterkodi/klor",
-    "kslash": "monsterkodi/kslash",
-    "noon": "monsterkodi/noon"
+    "karg": "github:monsterkodi/karg",
+    "klor": "github:monsterkodi/klor",
+    "kslash": "github:monsterkodi/kslash",
+    "noon": "github:monsterkodi/noon"
   },
   "devDependencies": {
     "kode": "github:monsterkodi/kode"
